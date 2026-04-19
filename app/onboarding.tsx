@@ -4,11 +4,11 @@ import type { ScrollView } from "react-native";
 import {
   Animated,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   useWindowDimensions,
   View,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
