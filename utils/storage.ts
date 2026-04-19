@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const storageKeys = {
 	onboardingComplete: "cc-reminder:onboarding-complete",
 	quickNotes: "cc-reminder:quick-notes",
-	cards: 'cc-reminder:cards',
+	cards: "cc-reminder:cards",
 } as const;
 
 export async function loadJson<T>(key: string, fallback: T): Promise<T> {

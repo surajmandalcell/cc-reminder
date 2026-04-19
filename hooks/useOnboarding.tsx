@@ -5,58 +5,58 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { storageKeys } from "@/utils/storage";
 
 type OnboardingContextValue = {
-  hasCompletedOnboarding: boolean;
-  isReady: boolean;
-  completeOnboarding: () => Promise<void>;
+	hasCompletedOnboarding: boolean;
+	isReady: boolean;
+	completeOnboarding: () => Promise<void>;
 };
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null);
 
 export function OnboardingProvider({ children }: PropsWithChildren) {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+	const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+	const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
+	useEffect(() => {
+		let isMounted = true;
 
-    async function hydrate() {
-      const value = await AsyncStorage.getItem(storageKeys.onboardingComplete);
+		async function hydrate() {
+			const value = await AsyncStorage.getItem(storageKeys.onboardingComplete);
 
-      if (!isMounted) {
-        return;
-      }
+			if (!isMounted) {
+				return;
+			}
 
-      setHasCompletedOnboarding(value === "true");
-      setIsReady(true);
-    }
+			setHasCompletedOnboarding(value === "true");
+			setIsReady(true);
+		}
 
-    hydrate();
+		hydrate();
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+		return () => {
+			isMounted = false;
+		};
+	}, []);
 
-  async function completeOnboarding() {
-    await AsyncStorage.setItem(storageKeys.onboardingComplete, "true");
-    setHasCompletedOnboarding(true);
-  }
+	async function completeOnboarding() {
+		await AsyncStorage.setItem(storageKeys.onboardingComplete, "true");
+		setHasCompletedOnboarding(true);
+	}
 
-  return (
-    <OnboardingContext.Provider
-      value={{ hasCompletedOnboarding, isReady, completeOnboarding }}
-    >
-      {children}
-    </OnboardingContext.Provider>
-  );
+	return (
+		<OnboardingContext.Provider
+			value={{ hasCompletedOnboarding, isReady, completeOnboarding }}
+		>
+			{children}
+		</OnboardingContext.Provider>
+	);
 }
 
 export function useOnboarding() {
-  const value = useContext(OnboardingContext);
+	const value = useContext(OnboardingContext);
 
-  if (!value) {
-    throw new Error("useOnboarding must be used inside OnboardingProvider");
-  }
+	if (!value) {
+		throw new Error("useOnboarding must be used inside OnboardingProvider");
+	}
 
-  return value;
+	return value;
 }

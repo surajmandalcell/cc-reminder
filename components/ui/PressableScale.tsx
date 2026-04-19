@@ -1,18 +1,25 @@
-import * as Haptics from 'expo-haptics';
-import { useRef } from 'react';
-import { Animated, Pressable } from 'react-native';
-import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
-import type { ReactNode } from 'react';
+import * as Haptics from "expo-haptics";
+import type { ReactNode } from "react";
+import { useRef } from "react";
+import type { PressableProps, StyleProp, ViewStyle } from "react-native";
+import { Animated, Pressable } from "react-native";
 
-import { motion } from '@/constants/Tokens';
+import { motion } from "@/constants/Tokens";
 
-type Props = Omit<PressableProps, 'children'> & {
+type Props = Omit<PressableProps, "children"> & {
   children?: ReactNode;
   contentStyle?: StyleProp<ViewStyle>;
   haptic?: boolean;
 };
 
-export function PressableScale({ children, contentStyle, haptic = true, onPress, disabled, ...rest }: Props) {
+export function PressableScale({
+  children,
+  contentStyle,
+  haptic = true,
+  onPress,
+  disabled,
+  ...rest
+}: Props) {
   const scale = useRef(new Animated.Value(1)).current;
 
   function animate(toValue: number) {
@@ -34,8 +41,22 @@ export function PressableScale({ children, contentStyle, haptic = true, onPress,
           void Haptics.selectionAsync();
         }
         onPress?.(event);
-      }}>
-      <Animated.View style={[contentStyle, { transform: [{ scale }] }]}>{children}</Animated.View>
+      }}
+    >
+      <Animated.View style={[contentStyle, { transform: [{ scale }] }]}>
+        {children}
+      </Animated.View>
     </Pressable>
   );
+}
+				void Haptics.selectionAsync();
+				}
+				onPress?.(event);
+			}}
+		>
+			<Animated.View style={[contentStyle, { transform: [{ scale }] }]}>
+				{children}
+			</Animated.View>
+		</Pressable>
+	);
 }
