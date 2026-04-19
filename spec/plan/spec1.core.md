@@ -59,8 +59,8 @@ Also lock the default timing:
 - billing date: same day
 - due soon: 7 days before, 3 days before, 1 day before
 - due today: same day
-- overdue: 1 day after due date
-- extended window: user-enabled only
+- overdue: active daily follow-up until settlement
+- extended window: 1 day before and on the manual extended date
 
 Why this comes third:
 
@@ -179,8 +179,10 @@ Why this slice first:
 1. No arbitrary custom reminders in v1.
 2. Tags are card-level only.
 3. Notifications are required in the baseline product.
-4. Provider templates are advisory, static, and manually verified by the user.
+4. Provider templates are advisory, static, manually verified by the user, and only need Amex coverage in v1.
 5. Quick notes are app-level and fully local.
+6. Billing and due day fields support 1 through 31 with nearest-valid-date handling for shorter months.
+7. The onboarding flow can stay as a single plain trust screen if it clearly states open-source, fully-local, and no-logs promises before entry.
 
 ## Exit Criteria
 

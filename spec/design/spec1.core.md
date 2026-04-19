@@ -34,6 +34,7 @@ Rules:
 - no Expo APIs
 - no AsyncStorage code
 - deterministic logic where possible
+- monthly billing and due scheduling must support user-entered day values from 1 to 31, with nearest-valid-date handling in shorter months
 
 ### Application Layer
 
@@ -234,6 +235,10 @@ Why:
 
 Provider templates should be modeled as catalog data, not executable financial truth.
 
+V1 scope:
+
+- ship only an Amex advisory template until real product pressure justifies broader issuer coverage
+
 Recommended shape:
 
 - provider id
@@ -257,12 +262,15 @@ Domain decides:
 - which stages exist
 - when a stage should occur relative to billing or due date
 - when a stage is resolved
+- overdue reminders remain active until settlement and should support daily follow-up scheduling from infrastructure
+- extended-payment reminders occur 1 day before the user-entered extended date and again on the extended date
 
 Infrastructure decides:
 
 - how local notifications are scheduled on the device
 - how notification permissions are requested
 - how scheduled notifications are canceled or refreshed when card data changes
+- how the app keeps working when notification permission is denied while still surfacing passive status in presentation
 
 ## Onboarding Design
 
@@ -277,6 +285,7 @@ Required themes:
 Design rule:
 
 - onboarding completion is a persistent local state and not tied to a backend account
+- onboarding may be implemented as a single plain trust screen in v1 as long as those trust promises remain explicit
 
 ## Design Risks
 
@@ -316,5 +325,6 @@ Mitigation:
 1. Payment completion and reminder acknowledgment are separate concepts.
 2. Tags live on cards only.
 3. Extended tracking supports both manual entry and provider templates, but templates are advisory only.
-4. Notifications are part of the baseline product, not a deferred enhancement.
-5. Quick notes exist as an app-level local feature.
+4. Billing and due date inputs accept 1 to 31 and clamp to the nearest valid calendar date for each month.
+5. Notifications are part of the baseline product, not a deferred enhancement.
+6. Quick notes exist as an app-level local feature.

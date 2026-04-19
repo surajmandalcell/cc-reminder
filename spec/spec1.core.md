@@ -69,6 +69,7 @@ Enable a user to manage credit card reminder records that include:
 - Android is the first delivery platform.
 - The app must not request or store sensitive card credentials.
 - Notifications are part of v1, not a later phase.
+- Billing day and due day support 1 through 31, with short months clamped to the nearest valid calendar date.
 - Reminders are derived from card lifecycle stages; there are no fully custom reminder schedules in v1.
 - Tags apply to cards only.
 - Extended payment tracking must be explicitly optional and acknowledged.
@@ -181,8 +182,8 @@ The app does not support arbitrary user-created reminder schedules in v1. Instea
 - Billing reminder: on the billing date
 - Due Soon reminders: 7 days before, 3 days before, and 1 day before due date
 - Due Today reminder: on the due date
-- Overdue reminder: 1 day after due date, with optional additional follow-up while unsettled
-- Extended Window reminders: off unless extended tracking is explicitly enabled and saved
+- Overdue reminder: the overdue state becomes active after the due date and should continue daily follow-up until settlement
+- Extended Window reminders: 1 day before the manual extended date and again on the manual extended date
 
 These timings are part of the default product behavior and can be refined later, but they are not ad hoc user-defined reminder rules in v1.
 
@@ -218,6 +219,7 @@ Rules:
 - users can ignore, edit, or override template suggestions entirely
 - templates never remove the need for explicit acknowledgment
 - templates must not be presented as guarantees or official issuer determinations
+- v1 only needs a single Amex-focused reference template; broader catalog coverage can wait
 
 Because issuer policies vary by product, account status, geography, and policy changes, provider templates exist to help memory, not to establish legal truth.
 
@@ -266,6 +268,8 @@ The onboarding flow must communicate:
 1. Open source: the product and its logic are visible to the user.
 2. Fully local: data is stored on-device in v1.
 3. No logs: the app does not ship usage logs or card data to a backend in v1.
+
+The v1 onboarding can be a single plain first-run trust screen rather than a multi-step carousel, as long as those promises are explicit before app entry.
 
 ## Acceptance Criteria For Spec 1
 

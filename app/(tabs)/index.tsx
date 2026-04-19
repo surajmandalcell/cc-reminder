@@ -1,5 +1,4 @@
-import { router } from ""react";
-
+import { useMemo } from "react";
 import { router } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -35,15 +34,15 @@ export default function RemindersScreen() {
         ]}
       >
         <Text style={[styles.heading, { color: palette.text }]}>Reminders</Text>
-        <Text style={[styles.summary, { color: palette.text }]}>
+        <Text style={[styles.summary, { color: palette.text }]}> 
           Cards: {metrics.cardCount} · Active reminders: {metrics.activeCount} ·
           Overdue: {metrics.overdueCount}
         </Text>
-        <Text style={[styles.helper, { color: palette.muted }]}>
+        <Text style={[styles.helper, { color: palette.muted }]}> 
           One flat list. Overdue reminders stay active until the current cycle
           is settled.
         </Text>
-        <Text style={[styles.helper, { color: palette.muted }]}>
+        <Text style={[styles.helper, { color: palette.muted }]}> 
           Device notification permission is optional. In-app reminders keep
           working either way.
         </Text>
@@ -56,10 +55,8 @@ export default function RemindersScreen() {
             { backgroundColor: palette.card, borderColor: palette.border },
           ]}
         >
-          <Text style={[styles.emptyTitle, { color: palette.text }]}>
-            No cards yet
-          </Text>
-          <Text style={[styles.helper, { color: palette.muted }]}>
+          <Text style={[styles.emptyTitle, { color: palette.text }]}>No cards yet</Text>
+          <Text style={[styles.helper, { color: palette.muted }]}> 
             Add a card first. The reminder stages are derived from the card
             schedule.
           </Text>
@@ -70,9 +67,7 @@ export default function RemindersScreen() {
               { backgroundColor: palette.cardAlt, borderColor: palette.border },
             ]}
           >
-            <Text style={[styles.buttonLabel, { color: palette.text }]}>
-              Add card
-            </Text>
+            <Text style={[styles.buttonLabel, { color: palette.text }]}>Add card</Text>
           </PressableScale>
         </View>
       ) : null}
@@ -84,10 +79,8 @@ export default function RemindersScreen() {
             { backgroundColor: palette.card, borderColor: palette.border },
           ]}
         >
-          <Text style={[styles.emptyTitle, { color: palette.text }]}>
-            Nothing active right now
-          </Text>
-          <Text style={[styles.helper, { color: palette.muted }]}>
+          <Text style={[styles.emptyTitle, { color: palette.text }]}>Nothing active right now</Text>
+          <Text style={[styles.helper, { color: palette.muted }]}> 
             Upcoming billing, due-soon, due-today, overdue, and extended
             reminders will appear here automatically.
           </Text>
@@ -112,28 +105,20 @@ export default function RemindersScreen() {
               { backgroundColor: palette.card, borderColor: palette.border },
             ]}
           >
-            <Text style={[styles.stage, { color: toneColor }]}>
-              {reminder.stage}
-            </Text>
-            <Text style={[styles.title, { color: palette.text }]}>
-              {reminder.title}
-            </Text>
-            <Text style={[styles.meta, { color: palette.text }]}>
+            <Text style={[styles.stage, { color: toneColor }]}>{reminder.stage}</Text>
+            <Text style={[styles.title, { color: palette.text }]}>{reminder.title}</Text>
+            <Text style={[styles.meta, { color: palette.text }]}> 
               {reminder.cardName} · {formatFullDate(reminder.dueDate)} ·{" "}
               {relativeDayLabel(reminder.scheduledFor)}
             </Text>
-            <Text style={[styles.helper, { color: palette.muted }]}>
-              {reminder.subtitle}
-            </Text>
-            <Text style={[styles.helper, { color: palette.muted }]}>
+            <Text style={[styles.helper, { color: palette.muted }]}>{reminder.subtitle}</Text>
+            <Text style={[styles.helper, { color: palette.muted }]}> 
               Acknowledged: {reminder.isAcknowledged ? "yes" : "no"} · Settled:{" "}
               {reminder.isSettled ? "yes" : "no"}
             </Text>
             <View style={styles.actions}>
               <PressableScale
-                onPress={() =>
-                  void acknowledgeReminder(reminder.cardId, reminder.id)
-                }
+                onPress={() => void acknowledgeReminder(reminder.cardId, reminder.id)}
                 contentStyle={[
                   styles.button,
                   {
@@ -147,9 +132,7 @@ export default function RemindersScreen() {
                 </Text>
               </PressableScale>
               <PressableScale
-                onPress={() =>
-                  void snoozeReminder(reminder.cardId, reminder.id, 12)
-                }
+                onPress={() => void snoozeReminder(reminder.cardId, reminder.id, 12)}
                 contentStyle={[
                   styles.button,
                   {
@@ -158,14 +141,10 @@ export default function RemindersScreen() {
                   },
                 ]}
               >
-                <Text style={[styles.buttonLabel, { color: palette.text }]}>
-                  Snooze 12h
-                </Text>
+                <Text style={[styles.buttonLabel, { color: palette.text }]}>Snooze 12h</Text>
               </PressableScale>
               <PressableScale
-                onPress={() =>
-                  void settleCycle(reminder.cardId, reminder.cycleId)
-                }
+                onPress={() => void settleCycle(reminder.cardId, reminder.cycleId)}
                 contentStyle={[
                   styles.button,
                   {
@@ -188,9 +167,7 @@ export default function RemindersScreen() {
                   },
                 ]}
               >
-                <Text style={[styles.buttonLabel, { color: palette.text }]}>
-                  Open card
-                </Text>
+                <Text style={[styles.buttonLabel, { color: palette.text }]}>Open card</Text>
               </PressableScale>
             </View>
           </View>
@@ -253,122 +230,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
-});
-						{
-										backgroundColor: palette.cardAlt,
-										borderColor: palette.border,
-									},
-								]}
-							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>
-									{reminder.isAcknowledged ? "Acknowledged" : "Acknowledge"}
-								</Text>
-							</PressableScale>
-							<PressableScale
-								onPress={() =>
-									void snoozeReminder(reminder.cardId, reminder.id, 12)
-								}
-								contentStyle={[
-									styles.button,
-									{
-										backgroundColor: palette.cardAlt,
-										borderColor: palette.border,
-									},
-								]}
-							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>
-									Snooze 12h
-								</Text>
-							</PressableScale>
-							<PressableScale
-								onPress={() =>
-									void settleCycle(reminder.cardId, reminder.cycleId)
-								}
-								contentStyle={[
-									styles.button,
-									{
-										backgroundColor: palette.cardAlt,
-										borderColor: palette.border,
-									},
-								]}
-							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>
-									{reminder.isSettled ? "Settled" : "Settle cycle"}
-								</Text>
-							</PressableScale>
-							<PressableScale
-								onPress={() => router.push(`/card/${reminder.cardId}` as never)}
-								contentStyle={[
-									styles.button,
-									{
-										backgroundColor: palette.cardAlt,
-										borderColor: palette.border,
-									},
-								]}
-							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>
-									Open card
-								</Text>
-							</PressableScale>
-						</View>
-					</View>
-				);
-			})}
-		</ScrollView>
-	);
-}
-
-const styles = StyleSheet.create({
-	content: {
-		padding: spacing.lg,
-		gap: spacing.md,
-	},
-	section: {
-		borderWidth: 1,
-		borderRadius: radius.sm,
-		padding: spacing.md,
-		gap: 8,
-	},
-	heading: {
-		fontSize: 20,
-		fontWeight: "700",
-	},
-	summary: {
-		fontSize: 14,
-		lineHeight: 20,
-	},
-	title: {
-		fontSize: 18,
-		fontWeight: "600",
-	},
-	stage: {
-		fontSize: 12,
-		fontWeight: "700",
-		textTransform: "uppercase",
-	},
-	meta: {
-		fontSize: 13,
-		lineHeight: 19,
-	},
-	helper: {
-		fontSize: 13,
-		lineHeight: 19,
-	},
-	emptyTitle: {
-		fontSize: 18,
-		fontWeight: "600",
-	},
-	actions: {
-		gap: 8,
-	},
-	button: {
-		borderWidth: 1,
-		borderRadius: radius.sm,
-		paddingVertical: 10,
-		paddingHorizontal: 12,
-	},
-	buttonLabel: {
-		fontSize: 14,
-		fontWeight: "600",
-	},
 });

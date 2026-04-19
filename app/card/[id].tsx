@@ -46,6 +46,7 @@ export default function CardDetailScreen() {
 		<>
 			<Stack.Screen options={{ title: card.name }} />
 			<CardForm
+				key={card.id}
 				title={card.name}
 				subtitle={`Upcoming derived stages: ${reminders.length}. Edit only what belongs to the card aggregate and keep sensitive data out.`}
 				initialDraft={mapCardToDraft(card)}

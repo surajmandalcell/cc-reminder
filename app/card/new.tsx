@@ -8,6 +8,7 @@ export default function NewCardScreen() {
 
 	return (
 		<CardForm
+			key="new-card-form"
 			title="Create a card"
 			subtitle="Capture only the data that matters for reminders: provider, last 4 digits, tags, dates, alerts, and optional extended tracking."
 			initialDraft={defaultDraft()}

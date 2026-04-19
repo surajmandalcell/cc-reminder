@@ -40,13 +40,3 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 });
-apper: {
-		alignSelf: "stretch",
-	},
-	pressed: {
-		opacity: 0.8,
-	},
-	disabled: {
-		opacity: 0.5,
-	},
-});

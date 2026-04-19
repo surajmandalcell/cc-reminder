@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { PressableScale } from "@/components/ui/PressableScale";
@@ -41,10 +41,6 @@ export function CardForm({
 	function update(next: Partial<CardDraft>) {
 		setDraft((current) => ({ ...current, ...next }));
 	}
-
-	useEffect(() => {
-		setDraft(initialDraft);
-	}, [initialDraft]);
 
 	async function handleSubmit() {
 		setIsSaving(true);
