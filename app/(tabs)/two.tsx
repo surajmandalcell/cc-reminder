@@ -54,7 +54,10 @@ export default function CardsScreen() {
 				]}
 			>
 				<Text style={[styles.heading, { color: palette.text }]}>Cards</Text>
-				<Text style={[styles.helper, { color: palette.muted }]}>Sorted by nearest due date first. Search works across card name, provider, last 4, and tags.</Text>
+				<Text style={[styles.helper, { color: palette.muted }]}>
+					Sorted by nearest due date first. Search works across card name,
+					provider, last 4, and tags.
+				</Text>
 			</View>
 
 			<TextField
@@ -73,7 +76,9 @@ export default function CardsScreen() {
 							{ backgroundColor: palette.cardAlt, borderColor: palette.border },
 						]}
 					>
-						<Text style={[styles.tagLabel, { color: palette.text }]}>All tags</Text>
+						<Text style={[styles.tagLabel, { color: palette.text }]}>
+							All tags
+						</Text>
 					</PressableScale>
 					{tagPool.map((tag) => (
 						<PressableScale
@@ -81,10 +86,15 @@ export default function CardsScreen() {
 							onPress={() => setSelectedTag(tag === selectedTag ? null : tag)}
 							contentStyle={[
 								styles.tagButton,
-								{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+								{
+									backgroundColor: palette.cardAlt,
+									borderColor: palette.border,
+								},
 							]}
 						>
-							<Text style={[styles.tagLabel, { color: palette.text }]}>{tag}</Text>
+							<Text style={[styles.tagLabel, { color: palette.text }]}>
+								{tag}
+							</Text>
 						</PressableScale>
 					))}
 				</View>
@@ -97,7 +107,9 @@ export default function CardsScreen() {
 					{ backgroundColor: palette.cardAlt, borderColor: palette.border },
 				]}
 			>
-				<Text style={[styles.buttonLabel, { color: palette.text }]}>Add card</Text>
+				<Text style={[styles.buttonLabel, { color: palette.text }]}>
+					Add card
+				</Text>
 			</PressableScale>
 
 			{filteredCards.length === 0 ? (
@@ -107,8 +119,12 @@ export default function CardsScreen() {
 						{ backgroundColor: palette.card, borderColor: palette.border },
 					]}
 				>
-					<Text style={[styles.title, { color: palette.text }]}>No cards found</Text>
-					<Text style={[styles.helper, { color: palette.muted }]}>Create a card or change the current search and tag filter.</Text>
+					<Text style={[styles.title, { color: palette.text }]}>
+						No cards found
+					</Text>
+					<Text style={[styles.helper, { color: palette.muted }]}>
+						Create a card or change the current search and tag filter.
+					</Text>
 				</View>
 			) : null}
 
@@ -125,13 +141,28 @@ export default function CardsScreen() {
 							{ backgroundColor: palette.card, borderColor: palette.border },
 						]}
 					>
-						<Text style={[styles.title, { color: palette.text }]}>{card.name}</Text>
-						<Text style={[styles.meta, { color: palette.text }]}>{card.provider} · last 4 {card.last4}</Text>
-						<Text style={[styles.meta, { color: palette.text }]}>Due day {card.dueDay}{card.billingDay ? ` · Billing day ${card.billingDay}` : ""}</Text>
-						<Text style={[styles.helper, { color: palette.muted }]}>Notifications: {card.notificationsEnabled ? "on" : "off"}</Text>
-						<Text style={[styles.helper, { color: palette.muted }]}>{nextReminder ? `Next reminder: ${nextReminder.title} · ${formatFullDate(nextReminder.scheduledFor)}` : "No active reminders right now."}</Text>
+						<Text style={[styles.title, { color: palette.text }]}>
+							{card.name}
+						</Text>
+						<Text style={[styles.meta, { color: palette.text }]}>
+							{card.provider} · last 4 {card.last4}
+						</Text>
+						<Text style={[styles.meta, { color: palette.text }]}>
+							Due day {card.dueDay}
+							{card.billingDay ? ` · Billing day ${card.billingDay}` : ""}
+						</Text>
+						<Text style={[styles.helper, { color: palette.muted }]}>
+							Notifications: {card.notificationsEnabled ? "on" : "off"}
+						</Text>
+						<Text style={[styles.helper, { color: palette.muted }]}>
+							{nextReminder
+								? `Next reminder: ${nextReminder.title} · ${formatFullDate(nextReminder.scheduledFor)}`
+								: "No active reminders right now."}
+						</Text>
 						{card.tags.length > 0 ? (
-							<Text style={[styles.helper, { color: palette.muted }]}>Tags: {card.tags.join(", ")}</Text>
+							<Text style={[styles.helper, { color: palette.muted }]}>
+								Tags: {card.tags.join(", ")}
+							</Text>
 						) : null}
 					</PressableScale>
 				);

@@ -13,10 +13,14 @@ import { deriveReminders, getReminderMetrics } from "@/utils/reminders";
 export default function RemindersScreen() {
 	const colorScheme = useColorScheme() ?? "light";
 	const palette = Colors[colorScheme];
-	const { cards, acknowledgeReminder, settleCycle, snoozeReminder } = useCards();
+	const { cards, acknowledgeReminder, settleCycle, snoozeReminder } =
+		useCards();
 
 	const reminders = useMemo(() => deriveReminders(cards), [cards]);
-	const metrics = useMemo(() => getReminderMetrics(cards, reminders), [cards, reminders]);
+	const metrics = useMemo(
+		() => getReminderMetrics(cards, reminders),
+		[cards, reminders],
+	);
 
 	return (
 		<ScrollView
@@ -30,9 +34,18 @@ export default function RemindersScreen() {
 				]}
 			>
 				<Text style={[styles.heading, { color: palette.text }]}>Reminders</Text>
-				<Text style={[styles.summary, { color: palette.text }]}>Cards: {metrics.cardCount} · Active reminders: {metrics.activeCount} · Overdue: {metrics.overdueCount}</Text>
-				<Text style={[styles.helper, { color: palette.muted }]}>One flat list. Overdue reminders stay active until the current cycle is settled.</Text>
-				<Text style={[styles.helper, { color: palette.muted }]}>Device notification permission is optional. In-app reminders keep working either way.</Text>
+				<Text style={[styles.summary, { color: palette.text }]}>
+					Cards: {metrics.cardCount} · Active reminders: {metrics.activeCount} ·
+					Overdue: {metrics.overdueCount}
+				</Text>
+				<Text style={[styles.helper, { color: palette.muted }]}>
+					One flat list. Overdue reminders stay active until the current cycle
+					is settled.
+				</Text>
+				<Text style={[styles.helper, { color: palette.muted }]}>
+					Device notification permission is optional. In-app reminders keep
+					working either way.
+				</Text>
 			</View>
 
 			{cards.length === 0 ? (
@@ -42,8 +55,13 @@ export default function RemindersScreen() {
 						{ backgroundColor: palette.card, borderColor: palette.border },
 					]}
 				>
-					<Text style={[styles.emptyTitle, { color: palette.text }]}>No cards yet</Text>
-					<Text style={[styles.helper, { color: palette.muted }]}>Add a card first. The reminder stages are derived from the card schedule.</Text>
+					<Text style={[styles.emptyTitle, { color: palette.text }]}>
+						No cards yet
+					</Text>
+					<Text style={[styles.helper, { color: palette.muted }]}>
+						Add a card first. The reminder stages are derived from the card
+						schedule.
+					</Text>
 					<PressableScale
 						onPress={() => router.push("/card/new" as never)}
 						contentStyle={[
@@ -51,7 +69,9 @@ export default function RemindersScreen() {
 							{ backgroundColor: palette.cardAlt, borderColor: palette.border },
 						]}
 					>
-						<Text style={[styles.buttonLabel, { color: palette.text }]}>Add card</Text>
+						<Text style={[styles.buttonLabel, { color: palette.text }]}>
+							Add card
+						</Text>
 					</PressableScale>
 				</View>
 			) : null}
@@ -63,8 +83,13 @@ export default function RemindersScreen() {
 						{ backgroundColor: palette.card, borderColor: palette.border },
 					]}
 				>
-					<Text style={[styles.emptyTitle, { color: palette.text }]}>Nothing active right now</Text>
-					<Text style={[styles.helper, { color: palette.muted }]}>Upcoming billing, due-soon, due-today, overdue, and extended reminders will appear here automatically.</Text>
+					<Text style={[styles.emptyTitle, { color: palette.text }]}>
+						Nothing active right now
+					</Text>
+					<Text style={[styles.helper, { color: palette.muted }]}>
+						Upcoming billing, due-soon, due-today, overdue, and extended
+						reminders will appear here automatically.
+					</Text>
 				</View>
 			) : null}
 
@@ -86,47 +111,85 @@ export default function RemindersScreen() {
 							{ backgroundColor: palette.card, borderColor: palette.border },
 						]}
 					>
-						<Text style={[styles.stage, { color: toneColor }]}>{reminder.stage}</Text>
-						<Text style={[styles.title, { color: palette.text }]}>{reminder.title}</Text>
-						<Text style={[styles.meta, { color: palette.text }]}>{reminder.cardName} · {formatFullDate(reminder.dueDate)} · {relativeDayLabel(reminder.scheduledFor)}</Text>
-						<Text style={[styles.helper, { color: palette.muted }]}>{reminder.subtitle}</Text>
-						<Text style={[styles.helper, { color: palette.muted }]}>Acknowledged: {reminder.isAcknowledged ? "yes" : "no"} · Settled: {reminder.isSettled ? "yes" : "no"}</Text>
+						<Text style={[styles.stage, { color: toneColor }]}>
+							{reminder.stage}
+						</Text>
+						<Text style={[styles.title, { color: palette.text }]}>
+							{reminder.title}
+						</Text>
+						<Text style={[styles.meta, { color: palette.text }]}>
+							{reminder.cardName} · {formatFullDate(reminder.dueDate)} ·{" "}
+							{relativeDayLabel(reminder.scheduledFor)}
+						</Text>
+						<Text style={[styles.helper, { color: palette.muted }]}>
+							{reminder.subtitle}
+						</Text>
+						<Text style={[styles.helper, { color: palette.muted }]}>
+							Acknowledged: {reminder.isAcknowledged ? "yes" : "no"} · Settled:{" "}
+							{reminder.isSettled ? "yes" : "no"}
+						</Text>
 						<View style={styles.actions}>
 							<PressableScale
-								onPress={() => void acknowledgeReminder(reminder.cardId, reminder.id)}
+								onPress={() =>
+									void acknowledgeReminder(reminder.cardId, reminder.id)
+								}
 								contentStyle={[
 									styles.button,
-									{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+									{
+										backgroundColor: palette.cardAlt,
+										borderColor: palette.border,
+									},
 								]}
 							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>{reminder.isAcknowledged ? "Acknowledged" : "Acknowledge"}</Text>
+								<Text style={[styles.buttonLabel, { color: palette.text }]}>
+									{reminder.isAcknowledged ? "Acknowledged" : "Acknowledge"}
+								</Text>
 							</PressableScale>
 							<PressableScale
-								onPress={() => void snoozeReminder(reminder.cardId, reminder.id, 12)}
+								onPress={() =>
+									void snoozeReminder(reminder.cardId, reminder.id, 12)
+								}
 								contentStyle={[
 									styles.button,
-									{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+									{
+										backgroundColor: palette.cardAlt,
+										borderColor: palette.border,
+									},
 								]}
 							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>Snooze 12h</Text>
+								<Text style={[styles.buttonLabel, { color: palette.text }]}>
+									Snooze 12h
+								</Text>
 							</PressableScale>
 							<PressableScale
-								onPress={() => void settleCycle(reminder.cardId, reminder.cycleId)}
+								onPress={() =>
+									void settleCycle(reminder.cardId, reminder.cycleId)
+								}
 								contentStyle={[
 									styles.button,
-									{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+									{
+										backgroundColor: palette.cardAlt,
+										borderColor: palette.border,
+									},
 								]}
 							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>{reminder.isSettled ? "Settled" : "Settle cycle"}</Text>
+								<Text style={[styles.buttonLabel, { color: palette.text }]}>
+									{reminder.isSettled ? "Settled" : "Settle cycle"}
+								</Text>
 							</PressableScale>
 							<PressableScale
 								onPress={() => router.push(`/card/${reminder.cardId}` as never)}
 								contentStyle={[
 									styles.button,
-									{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+									{
+										backgroundColor: palette.cardAlt,
+										borderColor: palette.border,
+									},
 								]}
 							>
-								<Text style={[styles.buttonLabel, { color: palette.text }]}>Open card</Text>
+								<Text style={[styles.buttonLabel, { color: palette.text }]}>
+									Open card
+								</Text>
 							</PressableScale>
 						</View>
 					</View>
