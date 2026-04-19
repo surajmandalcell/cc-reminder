@@ -1,4 +1,4 @@
-import type { Card, DerivedReminder, ReminderStageKind } from '@/types/domain';
+import type { Card, DerivedReminder, ReminderStageKind } from "@/types/domain";
 
 import {
 	addDays,
@@ -10,7 +10,7 @@ import {
 	getPreviousOccurrenceFromReference,
 	relativeDayLabel,
 	startOfDay,
-} from '@/utils/date';
+} from "@/utils/date";
 
 function buildReminder(
 	card: Card,
@@ -21,7 +21,7 @@ function buildReminder(
 		dueDate: Date;
 		title: string;
 		subtitle: string;
-		tone: DerivedReminder['tone'];
+		tone: DerivedReminder["tone"];
 	},
 ) {
 	const reminderId = `${options.cycleId}:${options.stage}:${formatDateKey(options.scheduledFor)}`;
@@ -62,16 +62,19 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 		const activeCycleId = `${card.id}:${formatDateKey(activeDueCycle)}`;
 
 		if (card.billingDay) {
-			const billingDate = getPreviousOccurrenceFromReference(card.billingDay, nextDue);
+			const billingDate = getPreviousOccurrenceFromReference(
+				card.billingDay,
+				nextDue,
+			);
 			reminders.push(
 				buildReminder(card, {
 					cycleId: nextCycleId,
-					stage: 'billing',
+					stage: "billing",
 					scheduledFor: billingDate,
 					dueDate: nextDue,
 					title: `${card.name} billing checkpoint`,
 					subtitle: `${formatShortDate(billingDate)} · ${relativeDayLabel(billingDate, today)}`,
-					tone: 'neutral',
+					tone: "neutral",
 				}),
 			);
 		}
@@ -84,9 +87,9 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 					stage: `due-soon-${offset}` as ReminderStageKind,
 					scheduledFor: stageDate,
 					dueDate: nextDue,
-					title: `${card.name} due in ${offset} day${offset === 1 ? '' : 's'}`,
+					title: `${card.name} due in ${offset} day${offset === 1 ? "" : "s"}`,
 					subtitle: `${card.provider} · Due ${formatFullDate(nextDue)}`,
-					tone: offset === 1 ? 'warning' : 'accent',
+					tone: offset === 1 ? "warning" : "accent",
 				}),
 			);
 		}
@@ -94,12 +97,12 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 		reminders.push(
 			buildReminder(card, {
 				cycleId: nextCycleId,
-				stage: 'due-today',
+				stage: "due-today",
 				scheduledFor: nextDue,
 				dueDate: nextDue,
 				title: `${card.name} due today`,
 				subtitle: `${card.provider} · ${formatFullDate(nextDue)}`,
-				tone: 'warning',
+				tone: "warning",
 			}),
 		);
 
@@ -107,18 +110,20 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 			reminders.push(
 				buildReminder(card, {
 					cycleId: activeCycleId,
-					stage: 'overdue',
+					stage: "overdue",
 					scheduledFor: today,
 					dueDate: previousDue,
 					title: `${card.name} is overdue`,
 					subtitle: `Due ${formatFullDate(previousDue)} · repeats daily until settled`,
-					tone: 'danger',
+					tone: "danger",
 				}),
 			);
 		}
 
 		if (card.extendedTracking?.manualDate) {
-			const extendedDate = startOfDay(new Date(card.extendedTracking.manualDate));
+			const extendedDate = startOfDay(
+				new Date(card.extendedTracking.manualDate),
+			);
 			if (isValidDate(extendedDate)) {
 				const extendedCycleId = activeCycleId;
 				const dayBeforeExtended = addDays(extendedDate, -1);
@@ -127,12 +132,12 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 					reminders.push(
 						buildReminder(card, {
 							cycleId: extendedCycleId,
-							stage: 'extended',
+							stage: "extended",
 							scheduledFor: dayBeforeExtended,
 							dueDate: extendedDate,
 							title: `${card.name} extended date tomorrow`,
 							subtitle: `${card.provider} · Manual date ${formatFullDate(extendedDate)}`,
-							tone: 'warning',
+							tone: "warning",
 						}),
 					);
 				}
@@ -141,24 +146,24 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 					reminders.push(
 						buildReminder(card, {
 							cycleId: extendedCycleId,
-							stage: 'extended',
+							stage: "extended",
 							scheduledFor: extendedDate,
 							dueDate: extendedDate,
 							title: `${card.name} extended follow-up`,
 							subtitle: `${card.provider} · Manual date ${formatFullDate(extendedDate)}`,
-							tone: 'success',
+							tone: "success",
 						}),
 					);
 				} else {
 					reminders.push(
 						buildReminder(card, {
 							cycleId: extendedCycleId,
-							stage: 'extended',
+							stage: "extended",
 							scheduledFor: today,
 							dueDate: extendedDate,
 							title: `${card.name} extended date passed`,
 							subtitle: `Manual date ${formatFullDate(extendedDate)} · settle when handled`,
-							tone: 'danger',
+							tone: "danger",
 						}),
 					);
 				}
@@ -168,13 +173,13 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 
 	return reminders
 		.filter((reminder) => {
-			if (reminder.isSettled && reminder.stage !== 'billing') {
+			if (reminder.isSettled && reminder.stage !== "billing") {
 				return false;
 			}
 			if (reminder.snoozedUntil && new Date(reminder.snoozedUntil) > now) {
 				return false;
 			}
-			if (reminder.stage === 'overdue' || reminder.stage === 'extended') {
+			if (reminder.stage === "overdue" || reminder.stage === "extended") {
 				return true;
 			}
 
@@ -182,15 +187,19 @@ export function deriveReminders(cards: Card[], now = new Date()) {
 		})
 		.sort(
 			(left, right) =>
-				new Date(left.scheduledFor).getTime() - new Date(right.scheduledFor).getTime(),
+				new Date(left.scheduledFor).getTime() -
+				new Date(right.scheduledFor).getTime(),
 		);
 }
 
-export function getReminderMetrics(cards: Card[], reminders: DerivedReminder[]) {
+export function getReminderMetrics(
+	cards: Card[],
+	reminders: DerivedReminder[],
+) {
 	return {
 		cardCount: cards.length,
 		activeCount: reminders.length,
-		overdueCount: reminders.filter((item) => item.stage === 'overdue').length,
-		extendedCount: reminders.filter((item) => item.stage === 'extended').length,
+		overdueCount: reminders.filter((item) => item.stage === "overdue").length,
+		extendedCount: reminders.filter((item) => item.stage === "extended").length,
 	};
 }

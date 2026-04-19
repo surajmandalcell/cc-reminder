@@ -36,33 +36,31 @@ export async function syncReminderNotifications(cards: Card[]) {
 
 	await Notifications.cancelAllScheduledNotificationsAsync();
 
-	await Promise.all(
-		[
-			...upcoming.slice(0, 24).map((reminder) =>
-				Notifications.scheduleNotificationAsync({
-					content: {
-						title: reminder.title,
-						body: reminder.subtitle,
-					},
-					trigger: {
-						type: Notifications.SchedulableTriggerInputTypes.DATE,
-						date: new Date(reminder.scheduledFor),
-					},
-				}),
-			),
-			...overdue.slice(0, 12).map((reminder) =>
-				Notifications.scheduleNotificationAsync({
-					content: {
-						title: reminder.title,
-						body: reminder.subtitle,
-					},
-					trigger: {
-						type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-						seconds: 24 * 60 * 60,
-						repeats: true,
-					},
-				}),
-			),
-		],
-	);
+	await Promise.all([
+		...upcoming.slice(0, 24).map((reminder) =>
+			Notifications.scheduleNotificationAsync({
+				content: {
+					title: reminder.title,
+					body: reminder.subtitle,
+				},
+				trigger: {
+					type: Notifications.SchedulableTriggerInputTypes.DATE,
+					date: new Date(reminder.scheduledFor),
+				},
+			}),
+		),
+		...overdue.slice(0, 12).map((reminder) =>
+			Notifications.scheduleNotificationAsync({
+				content: {
+					title: reminder.title,
+					body: reminder.subtitle,
+				},
+				trigger: {
+					type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+					seconds: 24 * 60 * 60,
+					repeats: true,
+				},
+			}),
+		),
+	]);
 }
