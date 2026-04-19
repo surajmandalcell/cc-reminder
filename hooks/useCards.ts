@@ -5,6 +5,7 @@ import {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 
@@ -16,6 +17,10 @@ import { loadJson, saveJson, storageKeys } from "@/utils/storage";
 const WARNING_VERSION = "v1";
 
 function normalizeDay(value: string) {
+	if (!value.trim()) {
+		return undefined;
+	}
+
 	const number = Number(value);
 	if (!Number.isFinite(number)) {
 		return undefined;
@@ -119,6 +124,11 @@ export function mapCardToDraft(card: Card): CardDraft {
 function useCardsState() {
 	const [cards, setCards] = useState<Card[]>([]);
 	const [isReady, setIsReady] = useState(false);
+	const cardsRef = useRef<Card[]>([]);
+
+	useEffect(() => {
+		cardsRef.current = cards;
+	}, [cards]);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -139,6 +149,7 @@ function useCardsState() {
 	}, []);
 
 	async function persist(nextCards: Card[]) {
+		cardsRef.current = nextCards;
 		setCards(nextCards);
 		await saveJson(storageKeys.cards, nextCards);
 		await syncReminderNotifications(
@@ -149,7 +160,7 @@ function useCardsState() {
 	async function createCard(draft: CardDraft) {
 		const error = validateCardDraft(draft);
 		if (error) return error;
-		await persist([toCard(draft), ...cards]);
+		await persist([toCard(draft), ...cardsRef.current]);
 		return null;
 	}
 
@@ -157,7 +168,7 @@ function useCardsState() {
 		const error = validateCardDraft(draft);
 		if (error) return error;
 
-		const nextCards = cards.map((card) =>
+		const nextCards = cardsRef.current.map((card) =>
 			card.id === id ? toCard(draft, card) : card,
 		);
 		await persist(nextCards);
@@ -165,11 +176,11 @@ function useCardsState() {
 	}
 
 	async function deleteCard(id: string) {
-		await persist(cards.filter((card) => card.id !== id));
+		await persist(cardsRef.current.filter((card) => card.id !== id));
 	}
 
 	async function acknowledgeReminder(cardId: string, reminderId: string) {
-		const nextCards = cards.map((card) => {
+		const nextCards = cardsRef.current.map((card) => {
 			if (card.id !== cardId) return card;
 			return {
 				...card,
@@ -196,7 +207,7 @@ function useCardsState() {
 		const snoozedUntil = new Date(
 			Date.now() + hours * 60 * 60 * 1000,
 		).toISOString();
-		const nextCards = cards.map((card) => {
+		const nextCards = cardsRef.current.map((card) => {
 			if (card.id !== cardId) return card;
 			return {
 				...card,
@@ -215,7 +226,7 @@ function useCardsState() {
 	}
 
 	async function settleCycle(cardId: string, cycleId: string) {
-		const nextCards = cards.map((card) => {
+		const nextCards = cardsRef.current.map((card) => {
 			if (card.id !== cardId) return card;
 			return {
 				...card,

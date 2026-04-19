@@ -30,7 +30,6 @@ export default function CardsScreen() {
 						.toLowerCase()
 						.includes(searchTerm);
 				const matchesTag = !selectedTag || card.tags.includes(selectedTag);
-
 				return matchesSearch && matchesTag;
 			})
 			.sort((left, right) => {
@@ -55,127 +54,84 @@ export default function CardsScreen() {
 				]}
 			>
 				<Text style={[styles.heading, { color: palette.text }]}>Cards</Text>
-				<Text style={[styles.helper, { color: palette.muted }]}>
-          Sorted by nearest due date first. Search works across card name,
-          provider, last 4, and tags.
-        </Text>
-      </View>
+				<Text style={[styles.helper, { color: palette.muted }]}>Sorted by nearest due date first. Search works across card name, provider, last 4, and tags.</Text>
+			</View>
 
-      <TextField
-        label="Search cards"
-        value={search}
-        onChangeText={setSearch}
-        placeholder="Search by card name, provider, last 4, or tag"
-      />
+			<TextField
+				label="Search cards"
+				value={search}
+				onChangeText={setSearch}
+				placeholder="Search by card name, provider, last 4, or tag"
+			/>
 
-      {tagPool.length > 0 ? (
-        <View style={styles.tagRow}>
-          <PressableScale
-            onPress={() => setSelectedTag(null)}
-            contentStyle={[
-              styles.tagButton,
-              { backgroundColor: palette.cardAlt, borderColor: palette.border },
-            ]}
-          >
-            <Text style={[styles.tagLabel, { color: palette.text }]}>
-              All tags
-            </Text>
-          </PressableScale>
-          {tagPool.map((tag) => (
-            <PressableScale
-              key={tag}
-              onPress={() => setSelectedTag(tag === selectedTag ? null : tag)}
-              contentStyle={[
-                styles.tagButton,
-                {
-                  backgroundColor: palette.cardAlt,
-                  borderColor: palette.border,
-                },
-              ]}
-            >
-              <Text style={[styles.tagLabel, { color: palette.text }]}>
-                {tag}
-              </Text>
-            </PressableScale>
-          ))}
-        </View>
-      ) : null}
+			{tagPool.length > 0 ? (
+				<View style={styles.tagRow}>
+					<PressableScale
+						onPress={() => setSelectedTag(null)}
+						contentStyle={[
+							styles.tagButton,
+							{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+						]}
+					>
+						<Text style={[styles.tagLabel, { color: palette.text }]}>All tags</Text>
+					</PressableScale>
+					{tagPool.map((tag) => (
+						<PressableScale
+							key={tag}
+							onPress={() => setSelectedTag(tag === selectedTag ? null : tag)}
+							contentStyle={[
+								styles.tagButton,
+								{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+							]}
+						>
+							<Text style={[styles.tagLabel, { color: palette.text }]}>{tag}</Text>
+						</PressableScale>
+					))}
+				</View>
+			) : null}
 
-      <PressableScale
-        onPress={() => router.push("/card/new" as never)}
-        contentStyle={[
-          styles.button,
-          { backgroundColor: palette.cardAlt, borderColor: palette.border },
-        ]}
-      >
-        <Text style={[styles.buttonLabel, { color: palette.text }]}>
-          Add card
-        </Text>
-      </PressableScale>
+			<PressableScale
+				onPress={() => router.push("/card/new" as never)}
+				contentStyle={[
+					styles.button,
+					{ backgroundColor: palette.cardAlt, borderColor: palette.border },
+				]}
+			>
+				<Text style={[styles.buttonLabel, { color: palette.text }]}>Add card</Text>
+			</PressableScale>
 
-      {filteredCards.length === 0 ? (
-        <View
-          style={[
-            styles.section,
-            { backgroundColor: palette.card, borderColor: palette.border },
-          ]}
-        >
-          <Text style={[styles.title, { color: palette.text }]}>
-            No cards found
-          </Text>
-          <Text style={[styles.helper, { color: palette.muted }]}>
-            Create a card or change the current search and tag filter.
-          </Text>
-        </View>
-      ) : null}
+			{filteredCards.length === 0 ? (
+				<View
+					style={[
+						styles.section,
+						{ backgroundColor: palette.card, borderColor: palette.border },
+					]}
+				>
+					<Text style={[styles.title, { color: palette.text }]}>No cards found</Text>
+					<Text style={[styles.helper, { color: palette.muted }]}>Create a card or change the current search and tag filter.</Text>
+				</View>
+			) : null}
 
-      {filteredCards.map((card) => {
-        const reminders = deriveReminders([card]);
-        const nextReminder = reminders[0];
+			{filteredCards.map((card) => {
+				const reminders = deriveReminders([card]);
+				const nextReminder = reminders[0];
 
-        return (
-          <PressableScale
-            key={card.id}
-            onPress={() => router.push(`/card/${card.id}` as never)}
-            contentStyle={[
-              styles.section,
-              { backgroundColor: palette.card, borderColor: palette.border },
-            ]}
-          >
-            <Text style={[styles.title, { color: palette.text }]}>
-              {card.name}
-            </Text>
-            <Text style={[styles.meta, { color: palette.text }]}>
-              {card.provider} · last 4 {card.last4}
-            </Text>
-            <Text style={[styles.meta, { color: palette.text }]}>
-              Due day {card.dueDay}
-              {card.billingDay ? ` · Billing day ${card.billingDay}` : ""}
-            </Text>
-            <Text style={[styles.helper, { color: palette.muted }]}>
-              Notifications: {card.notificationsEnabled ? "on" : "off"}
-            </Text>
-            <Text style={[styles.helper, { color: palette.muted }]}>
-              {nextReminder
-                ? `Next reminder: ${nextReminder.title} · ${formatFullDate(nextReminder.scheduledFor)}`
-                : "No active reminders right now."}
-            </Text>
-            {card.tags.length > 0 ? (
-              <Text style={[styles.helper, { color: palette.muted }]}>
-                Tags: {card.tags.join(", ")}
-              
-						<Text style={[styles.helper, { color: palette.muted }]}>
-							Notifications: {card.notificationsEnabled ? "on" : "off"}
-						</Text>
-						<Text style={[styles.helper, { color: palette.muted }]}>
-							{nextReminder
-								? `Next reminder: ${nextReminder.title} · ${formatFullDate(nextReminder.scheduledFor)}`
-								: "No active reminders right now."}
-						</Text>
+				return (
+					<PressableScale
+						key={card.id}
+						onPress={() => router.push(`/card/${card.id}` as never)}
+						contentStyle={[
+							styles.section,
+							{ backgroundColor: palette.card, borderColor: palette.border },
+						]}
+					>
+						<Text style={[styles.title, { color: palette.text }]}>{card.name}</Text>
+						<Text style={[styles.meta, { color: palette.text }]}>{card.provider} · last 4 {card.last4}</Text>
+						<Text style={[styles.meta, { color: palette.text }]}>Due day {card.dueDay}{card.billingDay ? ` · Billing day ${card.billingDay}` : ""}</Text>
+						<Text style={[styles.helper, { color: palette.muted }]}>Notifications: {card.notificationsEnabled ? "on" : "off"}</Text>
+						<Text style={[styles.helper, { color: palette.muted }]}>{nextReminder ? `Next reminder: ${nextReminder.title} · ${formatFullDate(nextReminder.scheduledFor)}` : "No active reminders right now."}</Text>
 						{card.tags.length > 0 ? (
-							<Text style={[styles.helper, { color: palette.muted }]}>
-								Tags: {card.tags.join(", ")}
-							</Text>
+							<Text style={[styles.helper, { color: palette.muted }]}>Tags: {card.tags.join(", ")}</Text>
 						) : null}
 					</PressableScale>
 				);
