@@ -40,6 +40,6 @@ const Colors = {
 	},
 } as const;
 
-export type AppPalette = (typeof Colors)["light"];
+export type AppPalette = (typeof Colors)[keyof typeof Colors];
 
 export default Colors;

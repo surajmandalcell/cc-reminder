@@ -1,43 +1,45 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import type { ComponentProps } from "react";
-import { Pressable } from "react-native";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Link, Tabs } from 'expo-router';
+import type { ComponentProps } from 'react';
+import { Pressable } from 'react-native';
 
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: ComponentProps<typeof FontAwesome>["name"];
+  name: ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome size={24} style={{ marginBottom: -2 }} {...props} />;
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme() ?? 'light';
+  const palette = Colors[colorScheme];
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: palette.tint,
+        tabBarInactiveTintColor: palette.tabIconDefault,
         tabBarStyle: {
-          height: 72,
-          paddingTop: 8,
-          paddingBottom: 10,
-          backgroundColor: Colors[colorScheme ?? "light"].card,
-          borderTopColor: Colors[colorScheme ?? "light"].border,
+          height: 76,
+          paddingTop: 10,
+          paddingBottom: 12,
+          backgroundColor: palette.card,
+          borderTopColor: palette.border,
         },
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '700',
+        },
         headerShown: useClientOnlyValue(false, true),
-      }}
-    >
+      }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: "Reminders",
+          title: 'Reminders',
           tabBarIcon: ({ color }) => <TabBarIcon name="bell" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -45,9 +47,9 @@ export default function TabLayout() {
                 {({ pressed }) => (
                   <FontAwesome
                     name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    size={22}
+                    color={palette.text}
+                    style={{ marginRight: 18, opacity: pressed ? 0.6 : 1 }}
                   />
                 )}
               </Pressable>
@@ -58,21 +60,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: "Cards",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="credit-card" color={color} />
-          ),
+          title: 'Cards',
+          tabBarIcon: ({ color }) => <TabBarIcon name="credit-card" color={color} />,
         }}
       />
       <Tabs.Screen
         name="notes"
         options={{
-          title: "Notes"
-					tabBarIcon: ({ color }) => (
-						<TabBarIcon name="sticky-note-o" color={color} />
-					),
-				}}
-			/>
-		</Tabs>
-	);
+          title: 'Notes',
+          tabBarIcon: ({ color }) => <TabBarIcon name="sticky-note-o" color={color} />,
+        }}
+      />
+    </Tabs>
+  );
 }

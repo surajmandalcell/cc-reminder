@@ -1,8 +1,9 @@
-import type { TextInputProps } from "react-native""react-native";
-import type { TextInputProps } from "react-native";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
-import { radius, spacing } from "@/constants/Tokens";
+import type { TextInputProps } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+
+import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
+import { radius, spacing } from '@/constants/Tokens';
 
 type Props = TextInputProps & {
   label: string;
@@ -11,7 +12,7 @@ type Props = TextInputProps & {
 };
 
 export function TextField({ label, hint, minHeight, style, ...props }: Props) {
-  const colorScheme = useColorScheme() ?? "light";
+  const colorScheme = useColorScheme() ?? 'light';
   const palette = Colors[colorScheme];
 
   return (
@@ -31,9 +32,7 @@ export function TextField({ label, hint, minHeight, style, ...props }: Props) {
           style,
         ]}
       />
-      {hint ? (
-        <Text style={[styles.hint, { color: palette.muted }]}>{hint}</Text>
-      ) : null}
+      {hint ? <Text style={[styles.hint, { color: palette.muted }]}>{hint}</Text> : null}
     </View>
   );
 }
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   input: {
     borderWidth: 1,
@@ -58,6 +57,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
   },
-});
-
 });
