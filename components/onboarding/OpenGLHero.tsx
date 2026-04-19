@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
-import type { ExpoWebGLRenderingContext } from 'expo-gl';
-import { GLView } from 'expo-gl';
-import { Platform, StyleSheet, View } from 'react-native';
+import type { ExpoWebGLRenderingCo"react";
+import type { ExpoWebGLRenderingContext } from "expo-gl";
+import { GLView } from "expo-gl";
+import { Platform, StyleSheet, View } from "react-native";
 import Animated, {
   Easing,
   FadeIn,
@@ -10,9 +10,9 @@ import Animated, {
   useSharedValue,
   withRepeat,
   withTiming,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
-import type { AppPalette } from '@/constants/Colors';
+import type { AppPalette } from "@/constants/Colors";
 
 type Props = {
   palette: AppPalette;
@@ -49,7 +49,10 @@ export function OpenGLHero({ palette, phase }: Props) {
   }));
 
   async function onContextCreate(gl: ExpoWebGLRenderingContext) {
-    const [{ Renderer }, THREE] = await Promise.all([import('expo-three'), import('three')]);
+    const [{ Renderer }, THREE] = await Promise.all([
+      import("expo-three"),
+      import("three"),
+    ]);
 
     const renderer = new Renderer({ gl }) as unknown as {
       setSize: (width: number, height: number) => void;
@@ -60,7 +63,12 @@ export function OpenGLHero({ palette, phase }: Props) {
     renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(46, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      46,
+      gl.drawingBufferWidth / gl.drawingBufferHeight,
+      0.1,
+      1000,
+    );
     camera.position.z = 7.5;
 
     const ambient = new THREE.AmbientLight(0xffffff, 1.4);
@@ -95,19 +103,31 @@ export function OpenGLHero({ palette, phase }: Props) {
 
     const chip = new THREE.Mesh(
       new THREE.BoxGeometry(0.58, 0.46, 0.04),
-      new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.9, roughness: 0.15 }),
+      new THREE.MeshStandardMaterial({
+        color: 0xf8fafc,
+        metalness: 0.9,
+        roughness: 0.15,
+      }),
     );
     chip.position.set(-1.15, 0.45, 0.12);
 
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(3.3, 0.045, 12, 80),
-      new THREE.MeshBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.45 }),
+      new THREE.MeshBasicMaterial({
+        color: 0x60a5fa,
+        transparent: true,
+        opacity: 0.45,
+      }),
     );
     ring.rotation.x = 1.2;
 
     const ringTwo = new THREE.Mesh(
       new THREE.TorusGeometry(2.4, 0.035, 12, 60),
-      new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.32 }),
+      new THREE.MeshBasicMaterial({
+        color: 0x2dd4bf,
+        transparent: true,
+        opacity: 0.32,
+      }),
     );
     ringTwo.rotation.y = 0.9;
 
@@ -120,10 +140,18 @@ export function OpenGLHero({ palette, phase }: Props) {
       particlePositions[stride + 1] = (Math.random() - 0.5) * 6;
       particlePositions[stride + 2] = (Math.random() - 0.5) * 4;
     }
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    particleGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(particlePositions, 3),
+    );
     const particles = new THREE.Points(
       particleGeometry,
-      new THREE.PointsMaterial({ color: 0xffffff, size: 0.04, transparent: true, opacity: 0.72 }),
+      new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.04,
+        transparent: true,
+        opacity: 0.72,
+      }),
     );
 
     group.add(card, panel, chip, ring, ringTwo);
@@ -152,18 +180,54 @@ export function OpenGLHero({ palette, phase }: Props) {
     render();
   }
 
-  if (Platform.OS === 'web') {
+  if (Platform.OS === "web") {
     return (
-      <View style={[styles.shell, { backgroundColor: palette.cardAlt, borderColor: palette.border }]}>
-        <Animated.View style={[styles.webGlow, overlayStyle, { backgroundColor: palette.glow }]} />
-        <Animated.View entering={FadeIn.duration(500)} exiting={FadeOut.duration(240)} style={styles.webStack}>
-          <View style={[styles.webCardBack, { backgroundColor: palette.hero, borderColor: palette.border }]} />
-          <View style={[styles.webCardMid, { backgroundColor: palette.card, borderColor: palette.border }]} />
-          <View style={[styles.webCardFront, { backgroundColor: palette.text }]}> 
+      <View
+        style={[
+          styles.shell,
+          { backgroundColor: palette.cardAlt, borderColor: palette.border },
+        ]}
+      >
+        <Animated.View
+          style={[
+            styles.webGlow,
+            overlayStyle,
+            { backgroundColor: palette.glow },
+          ]}
+        />
+        <Animated.View
+          entering={FadeIn.duration(500)}
+          exiting={FadeOut.duration(240)}
+          style={styles.webStack}
+        >
+          <View
+            style={[
+              styles.webCardBack,
+              { backgroundColor: palette.hero, borderColor: palette.border },
+            ]}
+          />
+          <View
+            style={[
+              styles.webCardMid,
+              { backgroundColor: palette.card, borderColor: palette.border },
+            ]}
+          />
+          <View
+            style={[styles.webCardFront, { backgroundColor: palette.text }]}
+          >
             <View style={styles.webLines}>
-              <View style={[styles.webChip, { backgroundColor: palette.background }]} />
-              <View style={[styles.webLine, { backgroundColor: palette.cardAlt }]} />
-              <View style={[styles.webLineShort, { backgroundColor: palette.hero }]} />
+              <View
+                style={[
+                  styles.webChip,
+                  { backgroundColor: palette.background },
+                ]}
+              />
+              <View
+                style={[styles.webLine, { backgroundColor: palette.cardAlt }]}
+              />
+              <View
+                style={[styles.webLineShort, { backgroundColor: palette.hero }]}
+              />
             </View>
           </View>
         </Animated.View>
@@ -172,8 +236,19 @@ export function OpenGLHero({ palette, phase }: Props) {
   }
 
   return (
-    <View style={[styles.shell, { backgroundColor: palette.cardAlt, borderColor: palette.border }]}>
-      <Animated.View style={[styles.webGlow, overlayStyle, { backgroundColor: palette.glow }]} />
+    <View
+      style={[
+        styles.shell,
+        { backgroundColor: palette.cardAlt, borderColor: palette.border },
+      ]}
+    >
+      <Animated.View
+        style={[
+          styles.webGlow,
+          overlayStyle,
+          { backgroundColor: palette.glow },
+        ]}
+      />
       <GLView style={styles.glView} onContextCreate={onContextCreate} />
     </View>
   );
@@ -184,16 +259,16 @@ const styles = StyleSheet.create({
     height: 300,
     borderRadius: 26,
     borderWidth: 1,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
   },
   glView: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   webGlow: {
-    position: 'absolute',
+    position: "absolute",
     width: 220,
     height: 220,
     borderRadius: 999,
@@ -202,31 +277,31 @@ const styles = StyleSheet.create({
   webStack: {
     width: 260,
     height: 180,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   webCardBack: {
-    position: 'absolute',
+    position: "absolute",
     width: 224,
     height: 136,
     borderRadius: 22,
     borderWidth: 1,
-    transform: [{ rotate: '-8deg' }, { translateX: -18 }, { translateY: 16 }],
+    transform: [{ rotate: "-8deg" }, { translateX: -18 }, { translateY: 16 }],
   },
   webCardMid: {
-    position: 'absolute',
+    position: "absolute",
     width: 234,
     height: 144,
     borderRadius: 24,
     borderWidth: 1,
-    transform: [{ rotate: '6deg' }, { translateX: 12 }, { translateY: 8 }],
+    transform: [{ rotate: "6deg" }, { translateX: 12 }, { translateY: 8 }],
   },
   webCardFront: {
     width: 244,
     height: 150,
     borderRadius: 24,
     padding: 22,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   webLines: {
     gap: 14,
@@ -246,4 +321,80 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 999,
   },
+});
+		{ backgroundColor: palette.glow },
+				]}
+			/>
+			<GLView style={styles.glView} onContextCreate={onContextCreate} />
+		</View>
+	);
+}
+
+const styles = StyleSheet.create({
+	shell: {
+		height: 300,
+		borderRadius: 26,
+		borderWidth: 1,
+		overflow: "hidden",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	glView: {
+		width: "100%",
+		height: "100%",
+	},
+	webGlow: {
+		position: "absolute",
+		width: 220,
+		height: 220,
+		borderRadius: 999,
+		opacity: 0.72,
+	},
+	webStack: {
+		width: 260,
+		height: 180,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	webCardBack: {
+		position: "absolute",
+		width: 224,
+		height: 136,
+		borderRadius: 22,
+		borderWidth: 1,
+		transform: [{ rotate: "-8deg" }, { translateX: -18 }, { translateY: 16 }],
+	},
+	webCardMid: {
+		position: "absolute",
+		width: 234,
+		height: 144,
+		borderRadius: 24,
+		borderWidth: 1,
+		transform: [{ rotate: "6deg" }, { translateX: 12 }, { translateY: 8 }],
+	},
+	webCardFront: {
+		width: 244,
+		height: 150,
+		borderRadius: 24,
+		padding: 22,
+		justifyContent: "space-between",
+	},
+	webLines: {
+		gap: 14,
+	},
+	webChip: {
+		width: 44,
+		height: 34,
+		borderRadius: 10,
+	},
+	webLine: {
+		width: 132,
+		height: 12,
+		borderRadius: 999,
+	},
+	webLineShort: {
+		width: 92,
+		height: 12,
+		borderRadius: 999,
+	},
 });
