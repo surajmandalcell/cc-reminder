@@ -25,25 +25,44 @@ export async function syncReminderNotifications(cards: Card[]) {
 		return;
 	}
 
-	const upcoming = deriveReminders(cards).filter((reminder) => {
+	const reminders = deriveReminders(cards);
+	const upcoming = reminders.filter((reminder) => {
 		const scheduleTime = new Date(reminder.scheduledFor).getTime();
-		return scheduleTime > Date.now();
+		return scheduleTime > Date.now() && reminder.stage !== "overdue";
 	});
+	const overdue = reminders.filter(
+		(reminder) => reminder.stage === "overdue" && !reminder.isSettled,
+	);
 
 	await Notifications.cancelAllScheduledNotificationsAsync();
 
 	await Promise.all(
-		upcoming.slice(0, 24).map((reminder) =>
-			Notifications.scheduleNotificationAsync({
-				content: {
-					title: reminder.title,
-					body: reminder.subtitle,
-				},
-				trigger: {
-					type: Notifications.SchedulableTriggerInputTypes.DATE,
-					date: new Date(reminder.scheduledFor),
-				},
-			}),
-		),
+		[
+			...upcoming.slice(0, 24).map((reminder) =>
+				Notifications.scheduleNotificationAsync({
+					content: {
+						title: reminder.title,
+						body: reminder.subtitle,
+					},
+					trigger: {
+						type: Notifications.SchedulableTriggerInputTypes.DATE,
+						date: new Date(reminder.scheduledFor),
+					},
+				}),
+			),
+			...overdue.slice(0, 12).map((reminder) =>
+				Notifications.scheduleNotificationAsync({
+					content: {
+						title: reminder.title,
+						body: reminder.subtitle,
+					},
+					trigger: {
+						type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+						seconds: 24 * 60 * 60,
+						repeats: true,
+					},
+				}),
+			),
+		],
 	);
 }

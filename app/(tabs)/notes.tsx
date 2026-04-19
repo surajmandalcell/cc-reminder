@@ -1,151 +1,73 @@
-import { useState } from "react";
-import {
-	ActivityIndicator,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { PressableScale } from "@/components/ui/PressableScale";
-import { TextField } from "@/components/ui/TextField";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
-import { radius, shadow, spacing } from "@/constants/Tokens";
-import { useQuickNotes } from "@/hooks/useQuickNotes";
+import { PressableScale } from '@/components/ui/PressableScale';
+import { TextField } from '@/components/ui/TextField';
+import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
+import { radius, spacing } from '@/constants/Tokens';
+import { useQuickNotes } from '@/hooks/useQuickNotes';
 
 function formatTimestamp(value: string) {
 	return new Intl.DateTimeFormat(undefined, {
-		month: "short",
-		day: "numeric",
-		hour: "numeric",
-		minute: "2-digit",
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
 	}).format(new Date(value));
 }
 
 export default function NotesScreen() {
-	const colorScheme = useColorScheme() ?? "light";
+	const colorScheme = useColorScheme() ?? 'light';
 	const palette = Colors[colorScheme];
 	const { notes, isReady, addNote, deleteNote } = useQuickNotes();
-	const [draft, setDraft] = useState("");
+	const [draft, setDraft] = useState('');
 	const [isSaving, setIsSaving] = useState(false);
 
 	async function handleAddNote() {
 		setIsSaving(true);
 		const saved = await addNote(draft);
 		if (saved) {
-			setDraft("");
+			setDraft('');
 		}
 		setIsSaving(false);
 	}
 
 	return (
-		<ScrollView
-			style={{ backgroundColor: palette.background }}
-			contentContainerStyle={styles.content}
-		>
-			<View
-				style={[
-					styles.hero,
-					shadow.medium,
-					{
-						backgroundColor: palette.card,
-						borderColor: palette.border,
-						shadowColor: palette.glow,
-					},
-				]}
-			>
-				<Text style={[styles.kicker, { color: palette.accent }]}>
-					Future-self notes
-				</Text>
-				<Text style={[styles.title, { color: palette.text }]}>
-					Keep memory crumbs that do not belong in the card model.
-				</Text>
-				<Text style={[styles.body, { color: palette.muted }]}>
-					Use this space for support call follow-ups, temporary payoff plans, or
-					issuer quirks you want visible without polluting structured payment
-					data.
-				</Text>
+		<ScrollView style={{ backgroundColor: palette.background }} contentContainerStyle={styles.content}>
+			<View style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}> 
+				<Text style={[styles.heading, { color: palette.text }]}>Notes</Text>
+				<Text style={[styles.helper, { color: palette.muted }]}>App-level free text only. Create and delete are supported in v1.</Text>
 			</View>
 
-			<View
-				style={[
-					styles.composer,
-					{ backgroundColor: palette.card, borderColor: palette.border },
-				]}
-			>
+			<View style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}> 
 				<TextField
 					label="New note"
 					value={draft}
 					onChangeText={setDraft}
-					placeholder="Example: If support confirms a manual extension, save the exact date here too."
+					placeholder="Write a reminder to your future self"
 					multiline
 					minHeight={120}
 				/>
-				<PressableScale
-					onPress={() => void handleAddNote()}
-					disabled={isSaving}
-					contentStyle={[
-						styles.saveButton,
-						{ backgroundColor: palette.text, opacity: isSaving ? 0.72 : 1 },
-					]}
-				>
-					<Text style={[styles.saveLabel, { color: palette.background }]}>
-						{isSaving ? "Saving..." : "Save note"}
-					</Text>
+				<PressableScale onPress={() => void handleAddNote()} disabled={isSaving} contentStyle={[styles.button, { backgroundColor: palette.cardAlt, borderColor: palette.border }]}> 
+					<Text style={[styles.buttonLabel, { color: palette.text }]}>{isSaving ? 'Saving...' : 'Save note'}</Text>
 				</PressableScale>
 			</View>
 
-			{!isReady ? (
-				<ActivityIndicator color={palette.tint} style={{ marginTop: 24 }} />
-			) : null}
+			{!isReady ? <ActivityIndicator color={palette.text} style={{ marginTop: 24 }} /> : null}
 
 			{isReady && notes.length === 0 ? (
-				<View
-					style={[
-						styles.empty,
-						{ backgroundColor: palette.card, borderColor: palette.border },
-					]}
-				>
-					<Text style={[styles.emptyTitle, { color: palette.text }]}>
-						No notes yet
-					</Text>
-					<Text style={[styles.emptyBody, { color: palette.muted }]}>
-						Start with something small that future-you will thank you for
-						remembering during the next billing cycle.
-					</Text>
+				<View style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}> 
+					<Text style={[styles.title, { color: palette.text }]}>No notes yet</Text>
 				</View>
 			) : null}
 
 			{notes.map((note) => (
-				<View
-					key={note.id}
-					style={[
-						styles.note,
-						shadow.soft,
-						{
-							backgroundColor: palette.card,
-							borderColor: palette.border,
-							shadowColor: palette.glow,
-						},
-					]}
-				>
-					<Text style={[styles.noteTime, { color: palette.accent }]}>
-						{formatTimestamp(note.createdAt)}
-					</Text>
-					<Text style={[styles.noteBody, { color: palette.text }]}>
-						{note.body}
-					</Text>
-					<PressableScale
-						onPress={() => void deleteNote(note.id)}
-						contentStyle={[
-							styles.deleteButton,
-							{ backgroundColor: palette.cardAlt, borderColor: palette.border },
-						]}
-					>
-						<Text style={[styles.deleteLabel, { color: palette.danger }]}>
-							Delete
-						</Text>
+				<View key={note.id} style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}> 
+					<Text style={[styles.meta, { color: palette.muted }]}>{formatTimestamp(note.createdAt)}</Text>
+					<Text style={[styles.helper, { color: palette.text }]}>{note.body}</Text>
+					<PressableScale onPress={() => void deleteNote(note.id)} contentStyle={[styles.button, { backgroundColor: palette.cardAlt, borderColor: palette.border }]}> 
+						<Text style={[styles.buttonLabel, { color: palette.text }]}>Delete</Text>
 					</PressableScale>
 				</View>
 			))}
@@ -158,80 +80,36 @@ const styles = StyleSheet.create({
 		padding: spacing.lg,
 		gap: spacing.md,
 	},
-	hero: {
+	section: {
 		borderWidth: 1,
-		borderRadius: radius.xl,
-		padding: spacing.xl,
-		gap: spacing.sm,
+		borderRadius: radius.sm,
+		padding: spacing.md,
+		gap: 8,
 	},
-	kicker: {
-		fontFamily: "SpaceMono",
-		fontSize: 12,
-		letterSpacing: 1,
-		textTransform: "uppercase",
+	heading: {
+		fontSize: 20,
+		fontWeight: '700',
 	},
 	title: {
-		fontSize: 28,
-		lineHeight: 34,
-		fontWeight: "800",
+		fontSize: 18,
+		fontWeight: '600',
 	},
-	body: {
-		fontSize: 15,
-		lineHeight: 22,
+	helper: {
+		fontSize: 14,
+		lineHeight: 20,
 	},
-	composer: {
+	meta: {
+		fontSize: 12,
+		lineHeight: 18,
+	},
+	button: {
 		borderWidth: 1,
-		borderRadius: radius.xl,
-		padding: spacing.lg,
-		gap: spacing.md,
-	},
-	saveButton: {
-		borderRadius: radius.md,
-		paddingVertical: 14,
-		alignItems: "center",
-	},
-	saveLabel: {
-		fontSize: 15,
-		fontWeight: "800",
-	},
-	empty: {
-		borderWidth: 1,
-		borderRadius: radius.xl,
-		padding: spacing.xl,
-		gap: spacing.sm,
-	},
-	emptyTitle: {
-		fontSize: 22,
-		fontWeight: "800",
-	},
-	emptyBody: {
-		fontSize: 15,
-		lineHeight: 22,
-	},
-	note: {
-		borderWidth: 1,
-		borderRadius: radius.xl,
-		padding: spacing.lg,
-		gap: spacing.sm,
-	},
-	noteTime: {
-		fontFamily: "SpaceMono",
-		fontSize: 11,
-		textTransform: "uppercase",
-	},
-	noteBody: {
-		fontSize: 15,
-		lineHeight: 23,
-	},
-	deleteButton: {
-		alignSelf: "flex-start",
-		borderWidth: 1,
-		borderRadius: radius.md,
-		paddingHorizontal: 14,
+		borderRadius: radius.sm,
 		paddingVertical: 10,
+		paddingHorizontal: 12,
 	},
-	deleteLabel: {
-		fontSize: 13,
-		fontWeight: "800",
+	buttonLabel: {
+		fontSize: 14,
+		fontWeight: '600',
 	},
 });

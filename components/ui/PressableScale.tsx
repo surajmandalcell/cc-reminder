@@ -1,51 +1,33 @@
-import * as Haptics from "expo-haptics";
-import type { ReactNode } from "react";
-import { useRef } from "react";
-import type { PressableProps, StyleProp, ViewStyle } from "react-native";
-import { Animated, Pressable } from "react-native";
+import type { ReactNode } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 
-import { motion } from "@/constants/Tokens";
-
-type Props = Omit<PressableProps, "children"> & {
+type Props = Omit<PressableProps, 'children' | 'style'> & {
 	children?: ReactNode;
 	contentStyle?: StyleProp<ViewStyle>;
 	haptic?: boolean;
 };
 
-export function PressableScale({
-	children,
-	contentStyle,
-	haptic = true,
-	onPress,
-	disabled,
-	...rest
-}: Props) {
-	const scale = useRef(new Animated.Value(1)).current;
-
-	function animate(toValue: number) {
-		Animated.timing(scale, {
-			toValue,
-			duration: motion.fast,
-			useNativeDriver: true,
-		}).start();
-	}
-
+export function PressableScale({ children, contentStyle, disabled, ...rest }: Props) {
 	return (
 		<Pressable
 			{...rest}
 			disabled={disabled}
-			onPressIn={() => animate(0.975)}
-			onPressOut={() => animate(1)}
-			onPress={(event) => {
-				if (haptic && !disabled) {
-					void Haptics.selectionAsync();
-				}
-				onPress?.(event);
-			}}
+			style={({ pressed }) => [styles.wrapper, disabled ? styles.disabled : null, pressed ? styles.pressed : null]}
 		>
-			<Animated.View style={[contentStyle, { transform: [{ scale }] }]}>
-				{children}
-			</Animated.View>
+			<View style={contentStyle}>{children}</View>
 		</Pressable>
 	);
 }
+
+const styles = StyleSheet.create({
+	wrapper: {
+		alignSelf: 'stretch',
+	},
+	pressed: {
+		opacity: 0.8,
+	},
+	disabled: {
+		opacity: 0.5,
+	},
+});

@@ -13,69 +13,71 @@ export function formatDateKey(value: Date) {
 }
 
 export function formatShortDate(value: string | Date) {
-	const date = typeof value === "string" ? new Date(value) : value;
+	const date = typeof value === 'string' ? new Date(value) : value;
 	return new Intl.DateTimeFormat(undefined, {
-		month: "short",
-		day: "numeric",
+		month: 'short',
+		day: 'numeric',
 	}).format(date);
 }
 
 export function formatFullDate(value: string | Date) {
-	const date = typeof value === "string" ? new Date(value) : value;
+	const date = typeof value === 'string' ? new Date(value) : value;
 	return new Intl.DateTimeFormat(undefined, {
-		month: "short",
-		day: "numeric",
-		year: "numeric",
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
 	}).format(date);
 }
 
 export function relativeDayLabel(value: string | Date, now = new Date()) {
-	const date = typeof value === "string" ? new Date(value) : value;
+	const date = typeof value === 'string' ? new Date(value) : value;
 	const difference = Math.round(
 		(startOfDay(date).getTime() - startOfDay(now).getTime()) / DAY_IN_MS,
 	);
 
-	if (difference === 0) return "Today";
-	if (difference === 1) return "Tomorrow";
-	if (difference === -1) return "Yesterday";
+	if (difference === 0) return 'Today';
+	if (difference === 1) return 'Tomorrow';
+	if (difference === -1) return 'Yesterday';
 	if (difference > 1) return `In ${difference} days`;
 	return `${Math.abs(difference)} days ago`;
 }
 
+function getDaysInMonth(year: number, monthIndex: number) {
+	return new Date(year, monthIndex + 1, 0).getDate();
+}
+
+function createMonthDate(year: number, monthIndex: number, preferredDay: number) {
+	const validDay = Math.min(preferredDay, getDaysInMonth(year, monthIndex));
+	return new Date(year, monthIndex, validDay);
+}
+
 export function getNextOccurrence(day: number, now = new Date()) {
 	const today = startOfDay(now);
-	const candidate = new Date(today.getFullYear(), today.getMonth(), day);
+	const currentMonthCandidate = createMonthDate(today.getFullYear(), today.getMonth(), day);
 
-	if (candidate >= today) {
-		return candidate;
+	if (currentMonthCandidate >= today) {
+		return currentMonthCandidate;
 	}
 
-	return new Date(today.getFullYear(), today.getMonth() + 1, day);
+	return createMonthDate(today.getFullYear(), today.getMonth() + 1, day);
 }
 
 export function getPreviousOccurrence(day: number, now = new Date()) {
 	const today = startOfDay(now);
-	const candidate = new Date(today.getFullYear(), today.getMonth(), day);
+	const currentMonthCandidate = createMonthDate(today.getFullYear(), today.getMonth(), day);
 
-	if (candidate <= today) {
-		return candidate;
+	if (currentMonthCandidate <= today) {
+		return currentMonthCandidate;
 	}
 
-	return new Date(today.getFullYear(), today.getMonth() - 1, day);
+	return createMonthDate(today.getFullYear(), today.getMonth() - 1, day);
 }
 
-export function getPreviousOccurrenceFromReference(
-	day: number,
-	reference: Date,
-) {
-	const candidate = new Date(
-		reference.getFullYear(),
-		reference.getMonth(),
-		day,
-	);
+export function getPreviousOccurrenceFromReference(day: number, reference: Date) {
+	const candidate = createMonthDate(reference.getFullYear(), reference.getMonth(), day);
 	if (candidate <= reference) {
 		return candidate;
 	}
 
-	return new Date(reference.getFullYear(), reference.getMonth() - 1, day);
+	return createMonthDate(reference.getFullYear(), reference.getMonth() - 1, day);
 }
