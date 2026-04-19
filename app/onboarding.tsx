@@ -1,5 +1,5 @@
-import { router } from "expo-rout"react";
-import { router } from "expo-router";
+import { useRef, useState } from 'react';
+import { router } from 'expo-router';
 import type { ScrollView } from "react-native";
 import {
   Animated,
@@ -13,6 +13,7 @@ import { Text } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { useOnboarding } from "@/hooks/useOnboarding";
+import { requestNotificationPermission } from '@/utils/notifications';
 
 const slides = [
   {
@@ -45,6 +46,7 @@ export default function OnboardingScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   async function finishOnboarding() {
+    await requestNotificationPermission();
     await completeOnboarding();
     router.replace("/(tabs)");
   }
@@ -311,44 +313,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
-});
-dgeText: {
-		fontFamily: "SpaceMono",
-		fontSize: 11,
-		letterSpacing: 0.8,
-		textTransform: "uppercase",
-	},
-	slideTitle: {
-		fontSize: 32,
-		lineHeight: 38,
-		fontWeight: "800",
-	},
-	slideBody: {
-		fontSize: 16,
-		lineHeight: 24,
-		maxWidth: 320,
-	},
-	footer: {
-		paddingHorizontal: 24,
-		paddingBottom: 24,
-		gap: 18,
-	},
-	dotsRow: {
-		flexDirection: "row",
-		gap: 8,
-		alignItems: "center",
-	},
-	dot: {
-		height: 10,
-		borderRadius: 999,
-	},
-	primaryButton: {
-		borderRadius: 18,
-		paddingVertical: 18,
-		alignItems: "center",
-	},
-	primaryButtonText: {
-		fontSize: 16,
-		fontWeight: "700",
-	},
 });

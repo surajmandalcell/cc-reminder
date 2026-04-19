@@ -3,10 +3,3 @@ export type QuickNote = {
 	body: string;
 	createdAt: string;
 };
-
-export type ProviderTemplate = {
-	id: string;
-	provider: string;
-	hint: string;
-	disclaimer: string;
-};

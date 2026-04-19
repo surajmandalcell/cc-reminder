@@ -60,6 +60,3 @@ export function useOnboarding() {
 
   return value;
 }
-
-	return value;
-}

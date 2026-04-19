@@ -1,26 +1,33 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Stack, useRouter, useSegments } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
+import * as Notifications from 'expo-notifications';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import 'react-native-reanimated';
 
-import { useColorScheme } from "@/components/useColorScheme";
-import { OnboardingProvider, useOnboarding } from "@/hooks/useOnboarding";
+import { useColorScheme } from '@/components/useColorScheme';
+import { CardsProvider } from '@/hooks/useCards';
+import { OnboardingProvider, useOnboarding } from '@/hooks/useOnboarding';
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: '(tabs)',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -28,13 +35,15 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
 
   return (
     <OnboardingProvider>
-      <RootLayoutContent loaded={loaded} error={error} />
+      <CardsProvider>
+        <RootLayoutContent loaded={loaded} error={error} />
+      </CardsProvider>
     </OnboardingProvider>
   );
 }
@@ -77,7 +86,8 @@ function RootLayoutNav() {
       return;
     }
 
-    const inOnboarding = segments[0] === "onboarding";
+    const firstSegment = String(segments[0] ?? '');
+    const inOnboarding = firstSegment === 'onboarding';
 
     if (!hasCompletedOnboarding && !inOnboarding) {
       router.replace("/onboarding");
@@ -85,21 +95,20 @@ function RootLayoutNav() {
     }
 
     if (hasCompletedOnboarding && inOnboarding) {
-      router.replace("/(tabs)");
+      router.replace('/(tabs)');
+      return;
     }
   }, [hasCompletedOnboarding, isReady, router, segments]);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal"tTheme}>
-			<Stack>
-				<Stack.Screen name="onboarding" options={{ headerShown: false }} />
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen name="modal" options={{ presentation: "modal" }} />
-			</Stack>
-		</ThemeProvider>
-	);
+        <Stack.Screen name="card/new" options={{ presentation: 'modal', title: 'New Card' }} />
+        <Stack.Screen name="card/[id]" options={{ title: 'Card Details' }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'About CC Reminder' }} />
+      </Stack>
+    </ThemeProvider>
+  );
 }

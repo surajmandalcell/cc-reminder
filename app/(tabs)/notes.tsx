@@ -1,145 +1,76 @@
-import { useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from "react-native";
-import { Text } from "@/components/Themed";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
-import { useQuickNotes } from "@/hooks/useQuickNotes";
+import { useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+import Colors from '@/constants/Colors';
+import { radius, shadow, spacing } from '@/constants/Tokens';
+import { PressableScale } from '@/components/ui/PressableScale';
+import { TextField } from '@/components/ui/TextField';
+import { useColorScheme } from '@/components/useColorScheme';
+import { useQuickNotes } from '@/hooks/useQuickNotes';
 
 function formatTimestamp(value: string) {
   return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
   }).format(new Date(value));
 }
 
 export default function NotesScreen() {
-  const colorScheme = useColorScheme() ?? "light";
+  const colorScheme = useColorScheme() ?? 'light';
   const palette = Colors[colorScheme];
   const { notes, isReady, addNote, deleteNote } = useQuickNotes();
-  const [draft, setDraft] = useState("");
+  const [draft, setDraft] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   async function handleAddNote() {
     setIsSaving(true);
     const saved = await addNote(draft);
     if (saved) {
-      setDraft("");
+      setDraft('');
     }
     setIsSaving(false);
   }
 
   return (
-    <ScrollView
-      style={[styles.screen, { backgroundColor: palette.background }]}
-      contentContainerStyle={styles.content}
-    >
-      <View
-        style={[
-          styles.heroCard,
-          { backgroundColor: palette.card, borderColor: palette.border },
-        ]}
-      >
-        <Text style={[styles.kicker, { color: palette.accent }]}>
-          Notes for future you
-        </Text>
-        <Text style={[styles.title, { color: palette.text }]}>
-          Keep local breadcrumbs for the next billing cycle.
-        </Text>
-        <Text style={[styles.body, { color: palette.muted }]}>
-          Use this space for issuer quirks, payoff intentions, or anything you
-          want to remember later. Everything is stored only on this device.
-        </Text>
+    <ScrollView style={{ backgroundColor: palette.background }} contentContainerStyle={styles.content}>
+      <View style={[styles.hero, shadow.medium, { backgroundColor: palette.card, borderColor: palette.border, shadowColor: palette.glow }]}> 
+        <Text style={[styles.kicker, { color: palette.accent }]}>Future-self notes</Text>
+        <Text style={[styles.title, { color: palette.text }]}>Keep memory crumbs that do not belong in the card model.</Text>
+        <Text style={[styles.body, { color: palette.muted }]}>Use this space for support call follow-ups, temporary payoff plans, or issuer quirks you want visible without polluting structured payment data.</Text>
       </View>
 
-      <View
-        style={[
-          styles.composerCard,
-          { backgroundColor: palette.card, borderColor: palette.border },
-        ]}
-      >
-        <TextInput
+      <View style={[styles.composer, { backgroundColor: palette.card, borderColor: palette.border }]}> 
+        <TextField
+          label="New note"
           value={draft}
           onChangeText={setDraft}
-          placeholder="Example: Call Amex after minimum payment clears before trusting extended window."
-          placeholderTextColor={palette.muted}
+          placeholder="Example: If Amex support confirms a manual extension, save the exact date here too."
           multiline
-          style={[
-            styles.input,
-            {
-              color: palette.text,
-              backgroundColor: palette.background,
-              borderColor: palette.border,
-            },
-          ]}
+          minHeight={120}
         />
-        <Pressable
-          onPress={() => {
-            void handleAddNote();
-          }}
-          disabled={isSaving}
-          style={({ pressed }) => [
-            styles.addButton,
-            {
-              backgroundColor: palette.text,
-              opacity: pressed || isSaving ? 0.88 : 1,
-            },
-          ]}
-        >
-          <Text style={[styles.addButtonText, { color: palette.background }]}>
-            {isSaving ? "Saving..." : "Save note"}
-          </Text>
-        </Pressable>
+        <PressableScale onPress={() => void handleAddNote()} disabled={isSaving} contentStyle={[styles.saveButton, { backgroundColor: palette.text, opacity: isSaving ? 0.72 : 1 }]}> 
+          <Text style={[styles.saveLabel, { color: palette.background }]}>{isSaving ? 'Saving...' : 'Save note'}</Text>
+        </PressableScale>
       </View>
 
-      {!isReady ? (
-        <ActivityIndicator color={palette.tint} style={styles.loader} />
-      ) : null}
+      {!isReady ? <ActivityIndicator color={palette.tint} style={{ marginTop: 24 }} /> : null}
 
       {isReady && notes.length === 0 ? (
-        <View
-          style={[
-            styles.emptyCard,
-            { backgroundColor: palette.card, borderColor: palette.border },
-          ]}
-        >
-          <Text style={[styles.emptyTitle, { color: palette.text }]}>
-            No notes yet
-          </Text>
-          <Text style={[styles.emptyBody, { color: palette.muted }]}>
-            Start with anything small that future-you would thank you for
-            remembering.
-          </Text>
+        <View style={[styles.empty, { backgroundColor: palette.card, borderColor: palette.border }]}> 
+          <Text style={[styles.emptyTitle, { color: palette.text }]}>No notes yet</Text>
+          <Text style={[styles.emptyBody, { color: palette.muted }]}>Start with something small that future-you will thank you for remembering during the next billing cycle.</Text>
         </View>
       ) : null}
 
       {notes.map((note) => (
-        <View
-          key={note.id}
-          style={[
-            styles.noteCard,
-            { backgroundColor: palette.card, borderColor: palette.border },
-          ]}
-        >
-          <Text style={[styles.noteTime, { color: palette.accent }]}>
-            {formatTimestamp(note.createdAt)}
-          </Text>
-          <Text style={[styles.noteBody, { color: palette.text }]}>
-            {note.body}
-          </Text>
-          <Pressable onPress={() => void deleteNote(note.id)}>
-            <Text style={[styles.deleteText, { color: palette.danger }]}>
-              Delete
-            </Text>
-          </Pressable>
+        <View key={note.id} style={[styles.note, shadow.soft, { backgroundColor: palette.card, borderColor: palette.border, shadowColor: palette.glow }]}> 
+          <Text style={[styles.noteTime, { color: palette.accent }]}>{formatTimestamp(note.createdAt)}</Text>
+          <Text style={[styles.noteBody, { color: palette.text }]}>{note.body}</Text>
+          <PressableScale onPress={() => void deleteNote(note.id)} contentStyle={[styles.deleteButton, { backgroundColor: palette.cardAlt, borderColor: palette.border }]}> 
+            <Text style={[styles.deleteLabel, { color: palette.danger }]}>Delete</Text>
+          </PressableScale>
         </View>
       ))}
     </ScrollView>
@@ -147,137 +78,84 @@ export default function NotesScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
   content: {
-    paddingHorizontal: 20,
-    paddingTop: 28,
-    paddingBottom: 40,
-    gap: 16,
+    padding: spacing.lg,
+    gap: spacing.md,
   },
-  heroCard: {
-    borderRadius: 28,
+  hero: {
     borderWidth: 1,
-    padding: 22,
-    gap: 12,
+    borderRadius: radius.xl,
+    padding: spacing.xl,
+    gap: spacing.sm,
   },
   kicker: {
-    fontFamily: "SpaceMono",
+    fontFamily: 'SpaceMono',
     fontSize: 12,
-    textTransform: "uppercase",
     letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   title: {
     fontSize: 28,
     lineHeight: 34,
-    fontWeight: "700",
+    fontWeight: '800',
   },
   body: {
     fontSize: 15,
     lineHeight: 22,
   },
-  composerCard: {
-    borderRadius: 24,
+  composer: {
     borderWidth: 1,
-    padding: 16,
-    gap: 14,
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    gap: spacing.md,
   },
-  input: {
-    minHeight: 130,
-    borderWidth: 1,
-    borderRadius: 18,
-    paddingHorizontal: 16,
+  saveButton: {
+    borderRadius: radius.md,
     paddingVertical: 14,
-    textAlignVertical: "top",
+    alignItems: 'center',
+  },
+  saveLabel: {
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  empty: {
+    borderWidth: 1,
+    borderRadius: radius.xl,
+    padding: spacing.xl,
+    gap: spacing.sm,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  emptyBody: {
     fontSize: 15,
     lineHeight: 22,
   },
-  addButton: {
-    borderRadius: 16,
-    paddingVertical: 14,
-    alignItems: "center",
-  },
-  addButtonText: {
-    fontSize: 15,
-    fontWeight: "700",
-  },
-  loader: {
-    marginTop: 24,
-  },
-  emptyCard: {
-    borderRadius: 24,
+  note: {
     borderWidth: 1,
-    padding: 20,
-    gap: 8,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  emptyBody: {
-    fontSize: 14,
-    lineHeight: 21,
-  },
-  noteCard: {
-    borderRadius: 24,
-    borderWidth: 1,
-    padding: 18,
-    gap: 10,
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    gap: spacing.sm,
   },
   noteTime: {
-    fontFamily: "SpaceMono",
+    fontFamily: 'SpaceMono',
     fontSize: 11,
-    textTransform: "uppercase",
-    letterSpacing: 0.9,
+    textTransform: 'uppercase',
   },
   noteBody: {
     fontSize: 15,
-    lineHeight: 22,
+    lineHeight: 23,
   },
-  deleteText: {
-    fontSize: 14,
-    fontWeight: "700",
+  deleteButton: {
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderRadius: radius.md,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
-});
-ontSize: 15,
-		fontWeight: "700",
-	},
-	loader: {
-		marginTop: 24,
-	},
-	emptyCard: {
-		borderRadius: 24,
-		borderWidth: 1,
-		padding: 20,
-		gap: 8,
-	},
-	emptyTitle: {
-		fontSize: 18,
-		fontWeight: "700",
-	},
-	emptyBody: {
-		fontSize: 14,
-		lineHeight: 21,
-	},
-	noteCard: {
-		borderRadius: 24,
-		borderWidth: 1,
-		padding: 18,
-		gap: 10,
-	},
-	noteTime: {
-		fontFamily: "SpaceMono",
-		fontSize: 11,
-		textTransform: "uppercase",
-		letterSpacing: 0.9,
-	},
-	noteBody: {
-		fontSize: 15,
-		lineHeight: 22,
-	},
-	deleteText: {
-		fontSize: 14,
-		fontWeight: "700",
-	},
+  deleteLabel: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
 });
