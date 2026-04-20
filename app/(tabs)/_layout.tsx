@@ -16,6 +16,23 @@ export default function TabLayout() {
 				tabBarStyle: {
 					backgroundColor: palette.card,
 					borderTopColor: palette.border,
+					borderTopWidth: 2,
+					height: 68,
+				},
+				tabBarLabelStyle: {
+					fontFamily: "SpaceMono",
+					fontSize: 11,
+					textTransform: "uppercase",
+				},
+				headerStyle: {
+					backgroundColor: palette.background,
+				},
+				headerShadowVisible: false,
+				headerTitleStyle: {
+					fontFamily: "SpaceMono",
+					fontSize: 16,
+					textTransform: "uppercase",
+					color: palette.text,
 				},
 				headerShown: useClientOnlyValue(false, true),
 			}}

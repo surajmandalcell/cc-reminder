@@ -73,13 +73,3 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockAsyncStorage.clear();
 });
-React.createElement(View, null, children ?? null),
-		Link: ({ children }: { children?: React.ReactNode }) =>
-			React.createElement(View, null, children ?? null),
-	};
-});
-
-beforeEach(() => {
-	jest.clearAllMocks();
-	mockAsyncStorage.clear();
-});

@@ -39,17 +39,27 @@ export default function OnboardingScreen() {
 			>
 				<Text style={[styles.title, { color: palette.text }]}>CC Reminder</Text>
 				<Text style={[styles.body, { color: palette.text }]}>
-					This app is open source, fully local in v1, and keeps no logs in v1.
+					A local-first reminder tool for billing checkpoints, due dates, and
+					manual follow-up windows.
 				</Text>
 				<View style={styles.list}>
 					<Text style={[styles.listItem, { color: palette.text }]}>
 						1. Card data stays on-device.
 					</Text>
 					<Text style={[styles.listItem, { color: palette.text }]}>
-						2. Only last 4 digits are stored.
+						2. Open source: the logic is visible.
 					</Text>
 					<Text style={[styles.listItem, { color: palette.text }]}>
-						3. Extended dates are memory aids, not guarantees.
+						3. Fully local in v1: no backend storage.
+					</Text>
+					<Text style={[styles.listItem, { color: palette.text }]}>
+						4. No logs in v1: no backend event trail.
+					</Text>
+					<Text style={[styles.listItem, { color: palette.text }]}>
+						5. Only last 4 digits are stored.
+					</Text>
+					<Text style={[styles.listItem, { color: palette.text }]}>
+						6. Extended dates are memory aids, not guarantees.
 					</Text>
 				</View>
 				<Text style={[styles.note, { color: palette.muted }]}>
@@ -80,38 +90,45 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	panel: {
-		borderWidth: 1,
+		borderWidth: 2,
 		borderRadius: radius.sm,
 		padding: spacing.lg,
 		gap: spacing.md,
 	},
 	title: {
+		fontFamily: "SpaceMono",
 		fontSize: 24,
-		fontWeight: "700",
+		lineHeight: 32,
+		textTransform: "uppercase",
 	},
 	body: {
-		fontSize: 16,
-		lineHeight: 23,
+		fontFamily: "SpaceMono",
+		fontSize: 14,
+		lineHeight: 22,
 	},
 	list: {
 		gap: 8,
 	},
 	listItem: {
-		fontSize: 15,
-		lineHeight: 22,
+		fontFamily: "SpaceMono",
+		fontSize: 13,
+		lineHeight: 21,
 	},
 	note: {
+		fontFamily: "SpaceMono",
 		fontSize: 13,
-		lineHeight: 18,
+		lineHeight: 20,
 	},
 	button: {
-		borderWidth: 1,
+		borderWidth: 2,
 		borderRadius: radius.sm,
 		paddingVertical: 14,
 		alignItems: "center",
 	},
 	buttonLabel: {
-		fontSize: 15,
-		fontWeight: "600",
+		fontFamily: "SpaceMono",
+		fontSize: 14,
+		lineHeight: 20,
+		textTransform: "uppercase",
 	},
 });

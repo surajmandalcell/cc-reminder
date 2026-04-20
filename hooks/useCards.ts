@@ -16,6 +16,28 @@ import { loadJson, saveJson, storageKeys } from "@/utils/storage";
 
 const WARNING_VERSION = "v1";
 
+function isValidManualDate(value: string) {
+	const trimmed = value.trim();
+	if (!trimmed) {
+		return false;
+	}
+
+	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed);
+	if (!match) {
+		return false;
+	}
+
+	const [, year, month, day] = match;
+	const parsed = new Date(`${year}-${month}-${day}T00:00:00`);
+
+	return (
+		!Number.isNaN(parsed.getTime()) &&
+		parsed.getFullYear() === Number(year) &&
+		parsed.getMonth() + 1 === Number(month) &&
+		parsed.getDate() === Number(day)
+	);
+}
+
 function normalizeDay(value: string) {
 	if (!value.trim()) {
 		return undefined;
@@ -41,6 +63,8 @@ export function validateCardDraft(draft: CardDraft) {
 	if (draft.extendedTrackingEnabled) {
 		if (!draft.extendedDate.trim())
 			return "Extended tracking needs a manual date.";
+		if (!isValidManualDate(draft.extendedDate))
+			return "Extended date must be a valid calendar date.";
 		if (!draft.acknowledgmentAccepted)
 			return "You must accept the extended tracking acknowledgment.";
 	}
@@ -138,7 +162,9 @@ function useCardsState() {
 			if (!isMounted) return;
 			setCards(storedCards);
 			setIsReady(true);
-			await syncReminderNotifications(storedCards);
+			await syncReminderNotifications(
+				storedCards.filter((card) => card.notificationsEnabled),
+			);
 		}
 
 		void hydrate();

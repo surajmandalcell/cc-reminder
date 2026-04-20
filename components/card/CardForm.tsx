@@ -9,6 +9,12 @@ import { radius, spacing } from "@/constants/Tokens";
 import { providerTemplates } from "@/data/providerTemplates";
 import type { CardDraft } from "@/types/domain";
 
+const EXTENDED_TRACKING_WARNING =
+	"Grace periods, extension windows, minimum-payment effects, late fees, and credit-reporting outcomes depend on your specific card agreement and may change without notice. CC Reminder cannot monitor your issuer's policies.";
+
+const EXTENDED_TRACKING_RESPONSIBILITY =
+	"By enabling extended payment tracking, you acknowledge that any extended date shown here is only a memory aid. It is not a guarantee, not legal advice, not financial advice, and may still be wrong for your card. You are responsible for verifying the actual terms directly with your issuer.";
+
 type Props = {
 	title: string;
 	subtitle: string;
@@ -160,6 +166,10 @@ export function CardForm({
 						Extended tracking: {draft.extendedTrackingEnabled ? "on" : "off"}
 					</Text>
 				</PressableScale>
+				<Text style={[styles.helper, { color: palette.muted }]}>
+					Keep this off unless you want to manage a manual follow-up window
+					yourself.
+				</Text>
 			</View>
 
 			<View
@@ -231,7 +241,7 @@ export function CardForm({
 						value={draft.extendedDate}
 						onChangeText={(value) => update({ extendedDate: value })}
 						placeholder="2026-05-28"
-						hint="A 1-day-before reminder and an on-date reminder will be created."
+						hint="Use a real calendar date in YYYY-MM-DD format. The app creates a 1-day-before reminder and an on-date reminder."
 					/>
 					<TextField
 						label="Paid amount or support note"
@@ -255,9 +265,11 @@ export function CardForm({
 							{draft.acknowledgmentAccepted ? "accepted" : "not accepted"}
 						</Text>
 					</PressableScale>
+					<Text style={[styles.warning, { color: palette.text }]}>
+						{EXTENDED_TRACKING_WARNING}
+					</Text>
 					<Text style={[styles.helper, { color: palette.muted }]}>
-						Extended dates are manual memory aids only. They are not guarantees
-						and do not verify issuer policy.
+						{EXTENDED_TRACKING_RESPONSIBILITY}
 					</Text>
 				</View>
 			) : null}
@@ -314,30 +326,42 @@ const styles = StyleSheet.create({
 		gap: 8,
 	},
 	title: {
+		fontFamily: "SpaceMono",
 		fontSize: 20,
-		fontWeight: "700",
+		lineHeight: 28,
+		textTransform: "uppercase",
 	},
 	sectionTitle: {
+		fontFamily: "SpaceMono",
 		fontSize: 16,
-		fontWeight: "600",
+		lineHeight: 22,
+		textTransform: "uppercase",
 	},
 	helper: {
+		fontFamily: "SpaceMono",
 		fontSize: 13,
-		lineHeight: 19,
+		lineHeight: 21,
+	},
+	warning: {
+		fontFamily: "SpaceMono",
+		fontSize: 13,
+		lineHeight: 21,
 	},
 	button: {
-		borderWidth: 1,
+		borderWidth: 2,
 		borderRadius: radius.sm,
 		paddingVertical: 12,
 		paddingHorizontal: 12,
 	},
 	buttonLabel: {
-		fontSize: 14,
-		fontWeight: "600",
-	},
-	error: {
+		fontFamily: "SpaceMono",
 		fontSize: 14,
 		lineHeight: 20,
-		fontWeight: "600",
+		textTransform: "uppercase",
+	},
+	error: {
+		fontFamily: "SpaceMono",
+		fontSize: 14,
+		lineHeight: 22,
 	},
 });

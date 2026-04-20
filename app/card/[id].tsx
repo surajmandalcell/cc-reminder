@@ -7,6 +7,7 @@ import Colors from "@/constants/Colors";
 import { radius, spacing } from "@/constants/Tokens";
 import { mapCardToDraft, useCards } from "@/hooks/useCards";
 import { deriveReminders } from "@/utils/reminders";
+import { blurActiveElementOnWeb } from "@/utils/web";
 
 export default function CardDetailScreen() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -54,11 +55,13 @@ export default function CardDetailScreen() {
 				onSubmit={async (draft) => {
 					const error = await updateCard(card.id, draft);
 					if (!error) {
+						blurActiveElementOnWeb();
 						router.back();
 					}
 					return error;
 				}}
 				onDelete={async () => {
+					blurActiveElementOnWeb();
 					await deleteCard(card.id);
 					router.replace("/(tabs)");
 				}}
@@ -72,17 +75,20 @@ const styles = StyleSheet.create({
 		padding: spacing.lg,
 	},
 	missing: {
-		borderWidth: 1,
+		borderWidth: 2,
 		borderRadius: radius.xl,
 		padding: spacing.xl,
 		gap: spacing.sm,
 	},
 	missingTitle: {
+		fontFamily: "SpaceMono",
 		fontSize: 24,
-		fontWeight: "800",
+		lineHeight: 32,
+		textTransform: "uppercase",
 	},
 	missingBody: {
-		fontSize: 15,
+		fontFamily: "SpaceMono",
+		fontSize: 14,
 		lineHeight: 22,
 	},
 });

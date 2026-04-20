@@ -106,7 +106,19 @@ function RootLayoutNav() {
 
 	return (
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-			<Stack>
+			<Stack
+				screenOptions={{
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark" ? "#121212" : "#f3f1eb",
+					},
+					headerShadowVisible: false,
+					headerTitleStyle: {
+						fontFamily: "SpaceMono",
+						fontSize: 16,
+					},
+				}}
+			>
 				<Stack.Screen name="onboarding" options={{ headerShown: false }} />
 				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 				<Stack.Screen

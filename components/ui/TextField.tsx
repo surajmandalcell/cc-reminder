@@ -25,7 +25,7 @@ export function TextField({ label, hint, minHeight, style, ...props }: Props) {
 					styles.input,
 					{
 						color: palette.text,
-						backgroundColor: palette.card,
+						backgroundColor: palette.cardAlt,
 						borderColor: palette.border,
 						minHeight,
 					},
@@ -44,19 +44,23 @@ const styles = StyleSheet.create({
 		gap: 6,
 	},
 	label: {
+		fontFamily: "SpaceMono",
 		fontSize: 13,
-		fontWeight: "600",
+		lineHeight: 18,
+		textTransform: "uppercase",
 	},
 	input: {
-		borderWidth: 1,
+		fontFamily: "SpaceMono",
+		borderWidth: 2,
 		borderRadius: radius.sm,
 		paddingHorizontal: spacing.md,
 		paddingVertical: 12,
 		fontSize: 15,
-		lineHeight: 21,
+		lineHeight: 22,
 	},
 	hint: {
+		fontFamily: "SpaceMono",
 		fontSize: 12,
-		lineHeight: 17,
+		lineHeight: 18,
 	},
 });

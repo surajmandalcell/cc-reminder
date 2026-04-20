@@ -2,6 +2,7 @@ import { router } from "expo-router";
 
 import { CardForm } from "@/components/card/CardForm";
 import { useCards } from "@/hooks/useCards";
+import { blurActiveElementOnWeb } from "@/utils/web";
 
 export default function NewCardScreen() {
 	const { createCard, defaultDraft } = useCards();
@@ -16,6 +17,7 @@ export default function NewCardScreen() {
 			onSubmit={async (draft) => {
 				const error = await createCard(draft);
 				if (!error) {
+					blurActiveElementOnWeb();
 					router.back();
 				}
 				return error;
